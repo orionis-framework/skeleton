@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# Except the .gitignore file itself
+!.gitignore
+
+# Do not ignore the "public" folder
+!public/
+
+# Ensure files inside "public" are tracked
+!public/**

@@ -1,0 +1,24 @@
+from orionis.luminate.console.kernel import CLIKernel
+import sys
+
+if __name__ == "__main__":
+    """
+    Main entry point of the application. This script initializes and
+    handles the command-line interface (CLI) commands using the
+    CLIKernel class.
+
+    It processes the arguments passed via the command line (sys.argv),
+    executes the corresponding command, and returns an appropriate exit
+    status code.
+
+    Returns
+    -------
+    int
+        The exit status of the CLI command. Typically, a value of 0 indicates
+        successful execution, while a non-zero value indicates an error.
+    """
+    # Initialize the CLIKernel object to handle the command line arguments
+    status = CLIKernel().handle(sys.argv)
+
+    # Exit the program with the status code returned by the CLIKernel
+    sys.exit(status)
