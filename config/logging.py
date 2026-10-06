@@ -1,119 +1,132 @@
-from orionis.luminate.contracts.config.config import IConfig
-from orionis.luminate.config.logging import Stack, Hourly, Daily, Weekly, Monthly, Chunked, Channels, Logging
-from orionis.luminate.services.environment.environment_service import env
-from orionis.luminate.facades.files.path_facade import storage_path
+from __future__ import annotations
+from dataclasses import dataclass, field
+from datetime import time
+from orionis.environment import Env
+from orionis.foundation.config.logging import (
+    Channels, Chunked, Daily, Hourly, Level, Logging,
+    Monthly, Stack, Weekly,
+)
 
-class Config(IConfig):
+@dataclass(frozen=True, kw_only=True)
+class BootstrapLogging(Logging):
 
-    config = Logging(
+    # ----------------------------------------------------------------------------------
+    # default : str, optional
+    # --- The default logging channel name.
+    # --- Uses the LOG_CHANNEL env var or "stack" if not set.
+    # ----------------------------------------------------------------------------------
+    default: str = field(
+        default_factory=lambda: Env.get("LOG_CHANNEL", "stack"),
+    )
 
-        #----------------------------------------------------------------------
-        # Default Logging Configuration
-        #----------------------------------------------------------------------
-        # This value defines the default logging configuration used by the application.
-        # It specifies which log channel to use for logging. The 'single' channel is
-        # used by default, meaning all logs are written to a single log file.
-        #----------------------------------------------------------------------
-        default = env('LOG_CHANNEL', 'stack'),
+    # ----------------------------------------------------------------------------------
+    # channels : Channels | dict, optional
+    # --- Configure each channel's environment keys and fallback values here.
+    # --- Shared LOG_PATH and LOG_RETENTION apply only to the selected channel.
+    # --- Env.get calls and channel conditions are explicit and customizable.
+    # ----------------------------------------------------------------------------------
+    channels: Channels | dict = field(
+        default_factory=lambda: Channels(
 
-        #----------------------------------------------------------------------
-        # Logging Channels
-        #----------------------------------------------------------------------
-        # Here you can configure the different logging channels used by the application.
-        # Each channel represents a way to write logs to a different location such as
-        # a file, the console, or an external service. You can define multiple channels
-        # with different configurations for log file rotation, retention, etc.
-        #----------------------------------------------------------------------
-        channels = Channels(
-
-            #------------------------------------------------------------------
-            # Single File Channel
-            #------------------------------------------------------------------
-            # This channel writes all log entries to a single log file.
-            # Useful for applications that do not require rotation or segmentation
-            # of log files.
-            #------------------------------------------------------------------
-            stack = Stack(
-                path=storage_path('logs/orionis.log'),  # Path to store the log file
-                level=env('LOG_LEVEL', 'debug')  # Log level, can be 'debug', 'info', etc.
+            # --------------------------------------------------------------------------
+            # stack : Stack, optional
+            # --- Log file for entries without time or size rotation.
+            # --------------------------------------------------------------------------
+            stack=Stack(
+                path=(
+                    Env.get("LOG_PATH", "storage/logs/stack.log")
+                    if Env.get("LOG_CHANNEL", "stack") == "stack"
+                    else "storage/logs/stack.log"
+                ),
+                level=Env.get("LOG_LEVEL", Level.INFO),
             ),
 
-            #------------------------------------------------------------------
-            # Hourly Log Channel
-            #------------------------------------------------------------------
-            # This channel writes logs to a file and retains logs for a specific
-            # number of hours. After the specified retention period, old logs are
-            # automatically deleted.
-            #------------------------------------------------------------------
-            hourly = Hourly(
-                path=storage_path('logs/orionis.log'),  # Path to store the log file
-                level=env('LOG_LEVEL', 'debug'),  # Log level
-                retention_hours=env('LOG_RETENTION_HOURS', 24)  # Retention period in hours
+            # --------------------------------------------------------------------------
+            # hourly : Hourly, optional
+            # --- Hourly log rotation with retention measured in hours.
+            # --------------------------------------------------------------------------
+            hourly=Hourly(
+                path=(
+                    Env.get("LOG_PATH", "storage/logs/hourly_{suffix}.log")
+                    if Env.get("LOG_CHANNEL", "stack") == "hourly"
+                    else "storage/logs/hourly_{suffix}.log"
+                ),
+                level=Env.get("LOG_LEVEL", Level.INFO),
+                retention_hours=(
+                    Env.get("LOG_RETENTION", 24)
+                    if Env.get("LOG_CHANNEL", "stack") == "hourly"
+                    else 24
+                ),
             ),
 
-            #------------------------------------------------------------------
-            # Daily Log Channel
-            #------------------------------------------------------------------
-            # This channel writes logs to a file and retains them for a specified
-            # number of days. It also allows specifying the time of day when log
-            # rotation should occur (e.g., at midnight).
-            #------------------------------------------------------------------
-            daily = Daily(
-                path=storage_path('logs/orionis.log'),  # Path to store the log file
-                level=env('LOG_LEVEL', 'debug'),  # Log level
-                retention_days=env('LOG_RETENTION_DAYS', 30),  # Retention period in days
-                at="00:00"  # Time of day when rotation occurs
+            # --------------------------------------------------------------------------
+            # daily : Daily, optional
+            # --- Daily log rotation with a configurable time and retention in days.
+            # --------------------------------------------------------------------------
+            daily=Daily(
+                path=(
+                    Env.get("LOG_PATH", "storage/logs/daily_{suffix}.log")
+                    if Env.get("LOG_CHANNEL", "stack") == "daily"
+                    else "storage/logs/daily_{suffix}.log"
+                ),
+                level=Env.get("LOG_LEVEL", Level.INFO),
+                retention_days=(
+                    Env.get("LOG_RETENTION", 7)
+                    if Env.get("LOG_CHANNEL", "stack") == "daily"
+                    else 7
+                ),
+                at=Env.get("LOG_ROTATION_TIME", time(hour=0, minute=0, second=0)),
             ),
 
-            #------------------------------------------------------------------
-            # Weekly Log Channel
-            #------------------------------------------------------------------
-            # This channel writes logs to a file and retains them for a specified
-            # number of weeks. Logs older than the specified number of weeks are
-            # automatically deleted.
-            #------------------------------------------------------------------
-            weekly = Weekly(
-                path=storage_path('logs/orionis.log'),  # Path to store the log file
-                level=env('LOG_LEVEL', 'debug'),  # Log level
-                retention_weeks=env('LOG_RETENTION_WEEKS', 4)  # Retention period in weeks
+            # --------------------------------------------------------------------------
+            # weekly : Weekly, optional
+            # --- Weekly log rotation with retention measured in weeks.
+            # --------------------------------------------------------------------------
+            weekly=Weekly(
+                path=(
+                    Env.get("LOG_PATH", "storage/logs/weekly_{suffix}.log")
+                    if Env.get("LOG_CHANNEL", "stack") == "weekly"
+                    else "storage/logs/weekly_{suffix}.log"
+                ),
+                level=Env.get("LOG_LEVEL", Level.INFO),
+                retention_weeks=(
+                    Env.get("LOG_RETENTION", 4)
+                    if Env.get("LOG_CHANNEL", "stack") == "weekly"
+                    else 4
+                ),
             ),
 
-            #------------------------------------------------------------------
-            # Monthly Log Channel
-            #------------------------------------------------------------------
-            # This channel writes logs to a file and retains them for a specified
-            # number of months. Logs older than the specified number of months
-            # are automatically deleted.
-            #------------------------------------------------------------------
-            monthly = Monthly(
-                path=storage_path('logs/orionis.log'),  # Path to store the log file
-                level=env('LOG_LEVEL', 'debug'),  # Log level
-                retention_months=env('LOG_RETENTION_MONTHS', 2)  # Retention period in months
+            # --------------------------------------------------------------------------
+            # monthly : Monthly, optional
+            # --- Monthly log rotation with retention measured in months.
+            # --------------------------------------------------------------------------
+            monthly=Monthly(
+                path=(
+                    Env.get("LOG_PATH", "storage/logs/monthly_{suffix}.log")
+                    if Env.get("LOG_CHANNEL", "stack") == "monthly"
+                    else "storage/logs/monthly_{suffix}.log"
+                ),
+                level=Env.get("LOG_LEVEL", Level.INFO),
+                retention_months=(
+                    Env.get("LOG_RETENTION", 4)
+                    if Env.get("LOG_CHANNEL", "stack") == "monthly"
+                    else 4
+                ),
             ),
 
-            #------------------------------------------------------------------
-            # Chunked Log Channel
-            #------------------------------------------------------------------
-            # This channel writes log entries to a series of files, each having
-            # a maximum size. When the log file reaches the specified size limit,
-            # a new file is created. This is useful for applications that generate
-            # large log files and need to split them into smaller chunks.
-            #------------------------------------------------------------------
-            chunked = Chunked(
-                path=storage_path('logs/orionis.log'),  # Path to store the log file
-                level=env('LOG_LEVEL', 'debug'),  # Log level
-                mb_size=env('LOG_CHUNKED_SIZE', 5),  # Max size of each chunk in MB (e.g., 5MB)
-                files=env('LOG_CHUNKED_FILES', 5)  # Number of log files to retain
-            )
-
+            # --------------------------------------------------------------------------
+            # chunked : Chunked, optional
+            # --- Rotation by file size, with a size limit and a retained file count.
+            # --------------------------------------------------------------------------
+            chunked=Chunked(
+                path=(
+                    Env.get("LOG_PATH", "storage/logs/chunked_{suffix}.log")
+                    if Env.get("LOG_CHANNEL", "stack") == "chunked"
+                    else "storage/logs/chunked_{suffix}.log"
+                ),
+                level=Env.get("LOG_LEVEL", Level.INFO),
+                mb_size=Env.get("LOG_MB_SIZE", 10),
+                files=Env.get("LOG_FILES", 5),
+            ),
         ),
-
-        #----------------------------------------------------------------------
-        # Additional Values
-        #----------------------------------------------------------------------
-        # If your application requires additional configurations, you can define
-        # them in this dictionary. For example, custom settings for external services
-        # or application-specific options.
-        #----------------------------------------------------------------------
-        custom = {}
     )

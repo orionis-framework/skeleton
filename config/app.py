@@ -1,104 +1,97 @@
-from config import *
+from __future__ import annotations
+from dataclasses import dataclass, field
+from orionis.environment import Env
+from orionis.foundation.config.app import App, Cipher, Environments
 
-class Config(IConfig):
+@dataclass(frozen=True, kw_only=True)
+class BootstrapApp(App):
 
-    config = App(
+    # ----------------------------------------------------------------------------------
+    # name : str, optional
+    # --- The name of the application. Defaults to the value of the 'APP_NAME'
+    # --- environment variable or 'Orionis Application'.
+    # ----------------------------------------------------------------------------------
+    name: str = field(
+        default_factory=lambda: Env.get("APP_NAME", "Orionis Application"),
+    )
 
-        #--------------------------------------------------------------------------
-        # Application Name
-        #--------------------------------------------------------------------------
-        # Defines the name that will be displayed in the browser's title bar.
-        # This application name may also be used in other parts of the application,
-        # such as in view headers or similar places.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # env : str | Environments, optional
+    # --- The environment in which the application runs. Defaults to the value of the
+    # --- 'APP_ENV' environment variable or Environments.DEVELOPMENT.
+    # ----------------------------------------------------------------------------------
+    env: str | Environments = field(
+        default_factory=lambda: Env.get("APP_ENV", Environments.DEVELOPMENT),
+    )
 
-        name = env('APP_NAME', 'Orionis Application'),
+    # ----------------------------------------------------------------------------------
+    # debug : bool, optional
+    # --- Whether debug mode is enabled. Defaults to the value of the 'APP_DEBUG'
+    # --- environment variable or True.
+    # ----------------------------------------------------------------------------------
+    debug: bool = field(
+        default_factory=lambda: Env.get("APP_DEBUG", True),
+    )
 
-        #--------------------------------------------------------------------------
-        # Application Environment
-        #--------------------------------------------------------------------------
-        # Defines the environment in which the application is running.
-        # This value can be 'development', 'testing', or 'production'.
-        # Depending on the environment, the application may behave differently,
-        # such as enabling or disabling debugging, showing detailed error messages, etc.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # timezone : str, optional
+    # --- The timezone of the application. Defaults to the value of the 'APP_TIMEZONE'
+    # --- environment variable or 'UTC'.
+    # ----------------------------------------------------------------------------------
+    timezone: str = field(
+        default_factory=lambda: Env.get("APP_TIMEZONE", "UTC"),
+    )
 
-        env = env('APP_ENV', Environments.DEVELOPMENT),
+    # ----------------------------------------------------------------------------------
+    # locale : str, optional
+    # --- The locale for the application. Defaults to the value of the 'APP_LOCALE'
+    # --- environment variable or 'en'.
+    # ----------------------------------------------------------------------------------
+    locale: str = field(
+        default_factory=lambda: Env.get("APP_LOCALE", "en"),
+    )
 
-        #--------------------------------------------------------------------------
-        # Debug Mode
-        #--------------------------------------------------------------------------
-        # Enables or disables detailed error display.
-        #
-        # When set to True, the application will show detailed error messages,
-        # which is useful during development but should be disabled in production
-        # to avoid exposing sensitive information and unnecessary error processing.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # fallback_locale : str, optional
+    # --- The locale used when a translation is missing. Defaults to the value of the
+    # --- 'APP_FALLBACK_LOCALE' environment variable or 'en'.
+    # ----------------------------------------------------------------------------------
+    fallback_locale: str = field(
+        default_factory=lambda: Env.get("APP_FALLBACK_LOCALE", "en"),
+    )
 
-        debug = env('APP_DEBUG', True),
+    # ----------------------------------------------------------------------------------
+    # language_path : str, optional
+    # --- Relative path to the JSON translation files. Defaults to the value of the
+    # --- 'APP_LANGUAGE_PATH' environment variable or 'resources/lang/'.
+    # ----------------------------------------------------------------------------------
+    language_path: str = field(
+        default_factory=lambda: Env.get("APP_LANGUAGE_PATH", "resources/lang/"),
+    )
 
-        #--------------------------------------------------------------------------
-        # Uvicorn Server Configuration
-        #--------------------------------------------------------------------------
-        # Defines the settings for running the application with Uvicorn.
-        #
-        # - `url`     : The host address for the application.
-        # - `port`    : The port number on which the application will run.
-        # - `workers` : Number of worker processes to handle requests.
-        # - `reload`  : Enables auto-reloading when code changes (useful for development).
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # cipher : str | Cipher, optional
+    # --- The cipher used for encryption. Defaults to the value of the 'APP_CIPHER'
+    # --- environment variable or Cipher.AES_256_CBC.
+    # ----------------------------------------------------------------------------------
+    cipher: str | Cipher = field(
+        default_factory=lambda: Env.get("APP_CIPHER", Cipher.AES_256_CBC),
+    )
 
-        url = env('APP_URL', 'http://127.0.0.1'),
-        port = env('APP_PORT', 8000),
-        workers = env('APP_WORKERS', 1),
-        reload = env('APP_RELOAD', True),
+    # ----------------------------------------------------------------------------------
+    # key : str | bytes | None, optional
+    # --- The encryption key for the application. Defaults to the value of the
+    # --- 'APP_KEY' environment variable or None.
+    # ----------------------------------------------------------------------------------
+    key: str | bytes | None = field(
+        default_factory=lambda: Env.get("APP_KEY", None),
+    )
 
-        #--------------------------------------------------------------------------
-        # Timezone Configuration
-        #--------------------------------------------------------------------------
-        # Defines the application's default timezone.
-        #
-        # This setting ensures consistency when handling timestamps, logs,
-        # and scheduled tasks. The default value is 'UTC'.
-        #--------------------------------------------------------------------------
-
-        timezone = env('APP_TIMEZONE', 'UTC'),
-
-        #--------------------------------------------------------------------------
-        # Locale Configuration
-        #--------------------------------------------------------------------------
-        # Defines the default locale for the application.
-        #
-        # This setting is used for localization and internationalization.
-        # It determines the language and regional settings for the application.
-        # The default value is 'en' (English).
-        #--------------------------------------------------------------------------
-
-        locale = env('APP_LOCALE', 'en'),
-        fallback_locale = env('APP_FALLBACK_LOCALE', 'en'),
-
-        #--------------------------------------------------------------------------
-        # Application Key
-        #--------------------------------------------------------------------------
-        # Defines the key used for encryption and decryption of sensitive data.
-        #
-        # The required key length and format depend on the selected encryption
-        # algorithm. Supported algorithms include AES-128-CBC, AES-192-CBC,
-        # AES-256-CBC, AES-128-GCM, AES-256-GCM, AES-CTR, AES-CFB, AES-CFB8,
-        # AES-CFB128, AES-OFB, and AES-ECB.
-        # Ensure the key matches the requirements of the chosen cipher and is kept
-        # secret. It is recommended to set the key via environment variables.
-        #--------------------------------------------------------------------------
-
-        cipher = env('APP_CIPHER', Cipher.AES_256_CBC),
-        key = env('APP_KEY'),
-
-        #--------------------------------------------------------------------------
-        # Maintenance Route
-        #--------------------------------------------------------------------------
-        # Defines the route that will return the response indicating
-        # that the system is under maintenance.
-        #--------------------------------------------------------------------------
-
-        maintenance = env('APP_MAINTENANCE', '/maintenance'),
+    # ----------------------------------------------------------------------------------
+    # maintenance : bool, optional
+    # --- Indicates whether the application is in maintenance mode. Defaults to the
+    # --- value of the 'APP_MAINTENANCE' environment variable or False.
+    # ----------------------------------------------------------------------------------
+    maintenance: bool = field(
+        default_factory=lambda: Env.get("APP_MAINTENANCE", False),
     )

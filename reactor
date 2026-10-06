@@ -1,24 +1,26 @@
-from orionis.luminate.console.kernel import CLIKernel
 import sys
+from orionis.aio import Loop
+from orionis.console.stdio import protocol_stdio
 
 if __name__ == "__main__":
     """
-    Main entry point of the application. This script initializes and
-    handles the command-line interface (CLI) commands using the
-    CLIKernel class.
+    Entry point for the reactor CLI.
 
-    It processes the arguments passed via the command line (sys.argv),
-    executes the corresponding command, and returns an appropriate exit
-    status code.
+    Parameters
+    ----------
+    argv : list[str]
+        The command-line arguments passed to the application.
 
     Returns
     -------
     int
-        The exit status of the CLI command. Typically, a value of 0 indicates
-        successful execution, while a non-zero value indicates an error.
+        The exit code returned by the reactor loop.
     """
-    # Initialize the CLIKernel object to handle the command line arguments
-    status = CLIKernel().handle(sys.argv)
+    with protocol_stdio(sys.argv):
+        from bootstrap.app import app
 
-    # Exit the program with the status code returned by the CLIKernel
-    sys.exit(status)
+        sys.exit(
+            Loop.run(
+                app.handleCommand(sys.argv),
+            ),
+        )

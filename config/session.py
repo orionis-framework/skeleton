@@ -1,79 +1,156 @@
-from orionis.luminate.config.session import Cookie, Session
-from orionis.luminate.contracts.config.config import IConfig
-from orionis.luminate.services.environment.environment_service import env
-from orionis.luminate.facades.files.path_facade import storage_path
+from __future__ import annotations
+from dataclasses import dataclass, field
+from orionis.environment import Env
+from orionis.foundation.config.session import (
+    SameSitePolicy,
+    Session,
+    SessionDriver,
+)
 
-class Config(IConfig):
+@dataclass(frozen=True, kw_only=True)
+class BootstrapSession(Session):
 
-    config = Session(
+    # ----------------------------------------------------------------------------------
+    # driver : str | SessionDriver, optional
+    # --- Session driver.
+    # --- Defaults to SessionDriver.MEMORY.
+    # ----------------------------------------------------------------------------------
+    driver: str | SessionDriver = field(
+        default_factory=lambda: Env.get("SESSION_DRIVER", SessionDriver.MEMORY),
+    )
 
-        #--------------------------------------------------------------------------
-        # Session Driver
-        #--------------------------------------------------------------------------
-        # This value defines the driver to be used for session management.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # lifetime : int, optional
+    # --- Session lifetime in minutes.
+    # --- Defaults to 120.
+    # ----------------------------------------------------------------------------------
+    lifetime: int = field(
+        default_factory=lambda: Env.get("SESSION_LIFETIME", 120),
+    )
 
-        driver = env('SESSION_DRIVER', 'file'),
+    # ----------------------------------------------------------------------------------
+    # expire_on_close : bool, optional
+    # --- Expire session on browser close (omits Max-Age).
+    # --- Defaults to False.
+    # ----------------------------------------------------------------------------------
+    expire_on_close: bool = field(
+        default_factory=lambda: Env.get("SESSION_EXPIRE_ON_CLOSE", False),
+    )
 
-        #--------------------------------------------------------------------------
-        # Session Lifetime
-        #--------------------------------------------------------------------------
-        # This value sets the duration (in minutes) for how long the session
-        # will be valid before it expires.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # track_previous_url : bool, optional
+    # --- Remember successful navigation URLs in the session.
+    # --- Defaults to True.
+    # ----------------------------------------------------------------------------------
+    track_previous_url: bool = field(
+        default_factory=lambda: Env.get("SESSION_TRACK_PREVIOUS_URL", True),
+    )
 
-        lifetime = env('SESSION_LIFETIME', 120),
+    # ----------------------------------------------------------------------------------
+    # renewal_interval : int, optional
+    # --- Set the minimum seconds between unchanged session renewals.
+    # --- Defaults to 0.
+    # ----------------------------------------------------------------------------------
+    renewal_interval: int = field(
+        default_factory=lambda: Env.get("SESSION_RENEWAL_INTERVAL", 0),
+    )
 
-        #--------------------------------------------------------------------------
-        # Expire on Close
-        #--------------------------------------------------------------------------
-        # This value determines whether the session should expire when the user
-        # closes their browser. If set to True, the session will not persist
-        # after the browser is closed.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # files : str | None, optional
+    # --- Path to session files (file driver).
+    # --- Defaults to 'storage/framework/sessions'.
+    # ----------------------------------------------------------------------------------
+    files: str | None = field(
+        default_factory=lambda: Env.get("SESSION_FILES", "storage/framework/sessions"),
+    )
 
-        expire_on_close = env('SESSION_EXPIRE_ON_CLOSE', False),
+    # ----------------------------------------------------------------------------------
+    # connection : str | None, optional
+    # --- Database connection for session storage (database driver).
+    # --- Defaults to None.
+    # ----------------------------------------------------------------------------------
+    connection: str | None = field(
+        default_factory=lambda: Env.get("SESSION_DB_CONNECTION", None),
+    )
 
-        #--------------------------------------------------------------------------
-        # Session Encryption
-        #--------------------------------------------------------------------------
-        # This value specifies whether the session data should be encrypted
-        # for additional security.
-        # If set to True, the session will be encrypted.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # table : str | None, optional
+    # --- Database table for session storage (database driver).
+    # --- Defaults to 'sessions'.
+    # ----------------------------------------------------------------------------------
+    table: str | None = field(
+        default_factory=lambda: Env.get("SESSION_DB_TABLE", "sessions"),
+    )
 
-        encrypt = env('SESSION_ENCRYPT', False),
+    # ----------------------------------------------------------------------------------
+    # cache : str | None, optional
+    # --- Cache store for session storage (cache driver).
+    # --- Defaults to None.
+    # ----------------------------------------------------------------------------------
+    cache: str | None = field(
+        default_factory=lambda: Env.get("SESSION_CACHE_STORE", None),
+    )
 
-        #--------------------------------------------------------------------------
-        # Session File Path
-        #--------------------------------------------------------------------------
-        # This value defines the directory path where session files will be stored
-        # when using the file driver.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # cookie : str, optional
+    # --- Name of the session cookie.
+    # --- Defaults to 'sessionid'.
+    # ----------------------------------------------------------------------------------
+    cookie: str = field(
+        default_factory=lambda: Env.get("SESSION_COOKIE", "sessionid"),
+    )
 
-        files = storage_path('framework/sessions'),
+    # ----------------------------------------------------------------------------------
+    # path : str, optional
+    # --- Path for the session cookie.
+    # --- Defaults to '/'.
+    # ----------------------------------------------------------------------------------
+    path: str = field(
+        default_factory=lambda: Env.get("SESSION_PATH", "/"),
+    )
 
-        #--------------------------------------------------------------------------
-        # Session Cookie Configuration
-        #--------------------------------------------------------------------------
-        # This section configures the properties of the session cookie.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # domain : str | None, optional
+    # --- Domain for the session cookie.
+    # --- None means cookie is valid for current domain only.
+    # ----------------------------------------------------------------------------------
+    domain: str | None = field(
+        default_factory=lambda: Env.get("SESSION_DOMAIN", None),
+    )
 
-        cookie = Cookie(
-            name=env('SESSION_COOKIE', None),
-            path=env('SESSION_PATH', '/'),
-            domain=env('SESSION_DOMAIN'),
-            secure=env('SESSION_SECURE_COOKIE'),
-            http_only=env('SESSION_HTTP_ONLY', True),
-            same_site=env('SESSION_SAME_SITE', 'lax')
-        ),
+    # ----------------------------------------------------------------------------------
+    # secure : bool, optional
+    # --- Restricts session cookie to HTTPS if True.
+    # --- Must be True if same_site is 'none'.
+    # --- Defaults to False.
+    # ----------------------------------------------------------------------------------
+    secure: bool = field(
+        default_factory=lambda: Env.get("SESSION_SECURE", False),
+    )
 
-        #--------------------------------------------------------------------------
-        # Additional Values
-        #--------------------------------------------------------------------------
-        # If your application requires additional configurations, you can define
-        # them in this dictionary.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # http_only : bool, optional
+    # --- Prevent JavaScript from accessing the cookie.
+    # --- Defaults to True.
+    # ----------------------------------------------------------------------------------
+    http_only: bool = field(
+        default_factory=lambda: Env.get("SESSION_HTTP_ONLY", True),
+    )
 
-        custom = {}
+    # ----------------------------------------------------------------------------------
+    # same_site : str | SameSitePolicy, optional
+    # --- SameSite cookie policy: 'lax', 'strict', or 'none'.
+    # --- If 'none', secure must be True.
+    # ----------------------------------------------------------------------------------
+    same_site: str | SameSitePolicy = field(
+        default_factory=lambda: Env.get("SESSION_SAME_SITE", SameSitePolicy.LAX.value),
+    )
+
+    # ----------------------------------------------------------------------------------
+    # partitioned : bool, optional
+    # --- Enable CHIPS (partitioned) cookies.
+    # --- Defaults to False.
+    # ----------------------------------------------------------------------------------
+    partitioned: bool = field(
+        default_factory=lambda: Env.get("SESSION_PARTITIONED", False),
     )

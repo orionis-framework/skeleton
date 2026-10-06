@@ -1,121 +1,131 @@
-from orionis.luminate.contracts.config.config import IConfig
-from orionis.luminate.config.database import Connections, Database, Mysql, Oracle, Pgsql, Sqlite
-from orionis.luminate.services.environment.environment_service import env
-from orionis.luminate.facades.files.path_facade import database_path
+from __future__ import annotations
+from dataclasses import dataclass, field
+from orionis.environment import Env
+from orionis.foundation.config.database import (
+    PGSQL, ConnectionName, Connections, Database, MySQL, MySQLCharset,
+    MySQLCollation, MySQLEngine, Oracle, OracleEncoding, OracleNencoding,
+    PGSQLCharset, PGSQLSSLMode, SQLite, SQLiteForeignKey, SQLiteJournalMode,
+    SQLiteSynchronous, SQLServer, SQLServerCharset,
+)
 
-class Config(IConfig):
+@dataclass(frozen=True, kw_only=True)
+class BootstrapDatabase(Database):
 
-    config = Database(
+    # ----------------------------------------------------------------------------------
+    # default : ConnectionName | str, optional
+    # --- The default database connection name. Uses the 'DB_CONNECTION' environment
+    # --- variable or defaults to 'ConnectionName.SQLITE' if not set.
+    # ----------------------------------------------------------------------------------
+    default: ConnectionName | str = field(
+        default_factory=lambda: Env.get("DB_CONNECTION", ConnectionName.SQLITE),
+    )
 
-        #--------------------------------------------------------------------------
-        # Default Database Connection Name
-        #--------------------------------------------------------------------------
-        # This value defines the default database connection to be used by your
-        # application. It can be set to any of the connections defined below.
-        #--------------------------------------------------------------------------
+    # ----------------------------------------------------------------------------------
+    # connections : Connections | dict, optional
+    # --- Configure each connection's environment keys and fallback values here.
+    # --- DB_CHARSET is shared and applies only to the active driver.
+    # ----------------------------------------------------------------------------------
+    connections: Connections | dict = field(
+        default_factory=lambda: Connections(
 
-        default = env('DB_CONNECTION', 'sqlite'),
-
-        #--------------------------------------------------------------------------
-        # Database Connections
-        #--------------------------------------------------------------------------
-        # Here you can define all of the database connections used by your application.
-        # You can configure multiple connections for different database systems such
-        # as SQLite, MySQL, PostgreSQL, and Oracle.
-        #--------------------------------------------------------------------------
-
-        connections = Connections(
-
-            #----------------------------------------------------------------------
-            # SQLite Database Connection
-            #----------------------------------------------------------------------
-            # Here you may configure the SQLite database settings used by your
-            # application. SQLite is a lightweight database that supports both
-            # in-memory and disk-based storage.
-            #----------------------------------------------------------------------
-            sqlite = Sqlite(
-                driver='sqlite',
-                url=env('DB_URL'),
-                database=env('DB_DATABASE', database_path('database.sqlite')),
-                prefix='',
-                foreign_key_constraints=env('DB_FOREIGN_KEYS', True),
-                busy_timeout=None,
-                journal_mode=None,
-                synchronous=None
+            # --------------------------------------------------------------------------
+            # sqlite : SQLite, optional
+            # --- SQLite connection settings. A missing URL is derived from the database
+            # --- path.
+            # --------------------------------------------------------------------------
+            sqlite=SQLite(
+                url=Env.get("DB_URL", None),
+                database=Env.get("DB_DATABASE", "database/database.sqlite"),
+                prefix=Env.get("DB_PREFIX", ""),
+                foreign_key_constraints=Env.get( "DB_FOREIGN_KEYS", SQLiteForeignKey.OFF),
+                busy_timeout=Env.get("DB_BUSY_TIMEOUT", 5000),
+                journal_mode=Env.get("DB_JOURNAL_MODE", SQLiteJournalMode.DELETE),
+                synchronous=Env.get("DB_SYNCHRONOUS", SQLiteSynchronous.NORMAL),
             ),
 
-            #----------------------------------------------------------------------
-            # MySQL Database Connection
-            #----------------------------------------------------------------------
-            # Here you may configure the MySQL database settings used by your
-            # application. MySQL is a popular open-source database management
-            # system which supports a wide range of features.
-            #----------------------------------------------------------------------
-            mysql = Mysql(
-                driver='mysql',
-                url=env('DB_URL'),
-                host=env('DB_HOST', '127.0.0.1'),
-                port=env('DB_PORT', '3306'),
-                database=env('DB_DATABASE', 'orionis'),
-                username=env('DB_USERNAME', 'root'),
-                password=env('DB_PASSWORD', ''),
-                unix_socket=env('DB_SOCKET', ''),
-                charset=env('DB_CHARSET', 'utf8mb4'),
-                collation=env('DB_COLLATION', 'utf8mb4_unicode_ci'),
-                prefix='',
-                prefix_indexes=True,
-                strict=True,
-                engine=None
+            # --------------------------------------------------------------------------
+            # mysql : MySQL, optional
+            # --- MySQL connection settings, including socket, charset, and storage
+            # --- engine.
+            # --------------------------------------------------------------------------
+            mysql=MySQL(
+                host=Env.get("DB_HOST", "127.0.0.1"),
+                port=Env.get("DB_PORT", 3306),
+                database=Env.get("DB_DATABASE", "orionis"),
+                username=Env.get("DB_USERNAME", "root"),
+                password=Env.get("DB_PASSWORD", ""),
+                unix_socket=Env.get("DB_SOCKET", ""),
+                charset=(
+                    Env.get("DB_CHARSET", MySQLCharset.UTF8MB4)
+                    if str(Env.get("DB_CONNECTION")).strip().lower() == "mysql"
+                    else MySQLCharset.UTF8MB4.value
+                ),
+                collation=Env.get("DB_COLLATION", MySQLCollation.UTF8MB4_UNICODE_CI),
+                prefix=Env.get("DB_PREFIX", ""),
+                prefix_indexes=Env.get("DB_PREFIX_INDEXES", True),
+                strict=Env.get("DB_STRICT", True),
+                engine=Env.get("DB_ENGINE", MySQLEngine.INNODB),
             ),
 
-            #----------------------------------------------------------------------
-            # PostgreSQL Database Connection
-            #----------------------------------------------------------------------
-            # Here you may configure the PostgreSQL database settings used by your
-            # application. PostgreSQL is a robust relational database system known
-            # for its reliability, feature robustness, and performance.
-            #----------------------------------------------------------------------
-            pgsql = Pgsql(
-                driver='pgsql',
-                url=env('DB_URL'),
-                host=env('DB_HOST', '127.0.0.1'),
-                port=env('DB_PORT', '5432'),
-                database=env('DB_DATABASE', 'orionis'),
-                username=env('DB_USERNAME', 'root'),
-                password=env('DB_PASSWORD', ''),
-                charset=env('DB_CHARSET', 'utf8'),
-                prefix='',
-                prefix_indexes=True,
-                search_path='public',
-                sslmode='prefer'
+            # --------------------------------------------------------------------------
+            # pgsql : PGSQL, optional
+            # --- PostgreSQL connection settings, including search path and SSL mode.
+            # --------------------------------------------------------------------------
+            pgsql=PGSQL(
+                host=Env.get("DB_HOST", "127.0.0.1"),
+                port=Env.get("DB_PORT", 5432),
+                database=Env.get("DB_DATABASE", "orionis"),
+                username=Env.get("DB_USERNAME", "postgres"),
+                password=Env.get("DB_PASSWORD", ""),
+                charset=(
+                    Env.get("DB_CHARSET", PGSQLCharset.UTF8)
+                    if str(Env.get("DB_CONNECTION")).strip().lower() == "pgsql"
+                    else PGSQLCharset.UTF8
+                ),
+                prefix=Env.get("DB_PREFIX", ""),
+                prefix_indexes=Env.get("DB_PREFIX_INDEXES", True),
+                search_path=Env.get("DB_SEARCH_PATH", "public"),
+                sslmode=Env.get("DB_SSLMODE", PGSQLSSLMode.PREFER),
             ),
 
-            #----------------------------------------------------------------------
-            # Oracle Database Connection
-            #----------------------------------------------------------------------
-            # Here you may configure the Oracle database settings used by your
-            # application. Oracle is a powerful enterprise database management
-            # system that is widely used in corporate environments.
-            #----------------------------------------------------------------------
-            oracle = Oracle(
-                driver='oracle',
-                dsn=env('DB_DSN'),
-                host=env('DB_HOST', '127.0.0.1'),
-                port=env('DB_PORT', '1521'),
-                username=env('DB_USERNAME', 'root'),
-                password=env('DB_PASSWORD', ''),
-                charset=env('DB_CHARSET', 'utf8'),
-                service=env('DB_SERVICE'),
-                sid=env('DB_SID')
-            )
+            # --------------------------------------------------------------------------
+            # oracle : Oracle, optional
+            # --- Oracle connection settings with service name, SID, DSN, or TNS
+            # --- options.
+            # --------------------------------------------------------------------------
+            oracle=Oracle(
+                username=Env.get("DB_USERNAME", "sys"),
+                password=Env.get("DB_PASSWORD", ""),
+                host=Env.get("DB_HOST", "localhost"),
+                port=Env.get("DB_PORT", 1521),
+                service_name=Env.get("DB_SERVICE_NAME", "ORCL"),
+                sid=Env.get("DB_SID", None),
+                dsn=Env.get("DB_DSN", None),
+                tns_name=Env.get("DB_TNS", None),
+                encoding=Env.get("DB_ENCODING", OracleEncoding.AL32UTF8),
+                nencoding=Env.get("DB_NENCODING", OracleNencoding.AL16UTF16),
+            ),
+
+            # --------------------------------------------------------------------------
+            # sqlserver : SQLServer, optional
+            # --- SQL Server connection settings, including ODBC and TLS options.
+            # --------------------------------------------------------------------------
+            sqlserver=SQLServer(
+                host=Env.get("DB_HOST", "127.0.0.1"),
+                port=Env.get("DB_PORT", 1433),
+                database=Env.get("DB_DATABASE", "orionis"),
+                username=Env.get("DB_USERNAME", "sa"),
+                password=Env.get("DB_PASSWORD", ""),
+                charset=(
+                    Env.get("DB_CHARSET", SQLServerCharset.UTF8)
+                    if str(Env.get("DB_CONNECTION")).strip().lower() == "sqlserver"
+                    else SQLServerCharset.UTF8
+                ),
+                prefix=Env.get("DB_PREFIX", ""),
+                prefix_indexes=Env.get("DB_PREFIX_INDEXES", True),
+                encrypt=Env.get("DB_ENCRYPT", "yes"),
+                trust_server_certificate=Env.get("DB_TRUST_SERVER_CERTIFICATE", True),
+                odbc_driver=Env.get("DB_ODBC_DRIVER", "ODBC Driver 18 for SQL Server"),
+            ),
         ),
-
-        #--------------------------------------------------------------------------
-        # Additional Values
-        #--------------------------------------------------------------------------
-        # If your application requires additional configurations, you can define
-        # them in this dictionary.
-        #--------------------------------------------------------------------------
-
-        custom = {}
     )
