@@ -12,7 +12,6 @@
       <nav class="orionis-welcome-nav" aria-label="{{ __('Useful links') }}">
         <a href="https://docs.orionis-framework.com/" target="_blank" rel="noopener noreferrer">{{ __('Documentation') }}</a>
         <a href="https://github.com/orionis-framework/" target="_blank" rel="noopener noreferrer">GitHub</a>
-        <a href="{{ url('/sign-up') }}" class="btn">{{ __('Sign up') }}</a>
       </nav>
     </header>
 
@@ -26,12 +25,6 @@
           <h1 id="welcome-heading">{{ __('Build something') }}<br><span>{{ __('extraordinary.') }}</span></h1>
           <p>{{ __('Your Orionis application is ready.') }}<br>{{ __('From your first route to your next big project.') }}</p>
           <div class="orionis-welcome-actions">
-            <a href="{{ url('/login') }}" class="btn orionis-welcome-primary">
-              {{ __('Sign in') }}
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" class="orionis-icon" aria-hidden="true" focusable="false">
-                <path d="M4 12h16m-6-6 6 6-6 6"/>
-              </svg>
-            </a>
             <a href="https://docs.orionis-framework.com/" target="_blank" rel="noopener noreferrer" class="btn orionis-welcome-secondary">{{ __('Read Docs') }}</a>
           </div>
         </div>
