@@ -5,6 +5,8 @@ ignore = [
     "D100",
     "D101",
     "D104",
+    "ERA001",
+    "F401",
     "I001",
     "I002",
     "INP001",
@@ -13,13 +15,15 @@ ignore = [
     "PLR0917",
     "TRY300",
     "TRY301",
+    "TC001",
+    "TC002",
+    "PT009",
 ]
 
 [lint.per-file-ignores]
 "app/**" = [
     "ARG002",
     "BLE001",
-    "TC001",
     "TC002",
 ]
 "app/console/commands/**" = [
@@ -38,7 +42,6 @@ ignore = [
 "database/**" = [
     "E501",
     "S608",
-    "TC001",
 ]
 "routes/**" = [
     "E501",

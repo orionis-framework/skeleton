@@ -1,71 +1,28 @@
-# ========================
-# Orionis runtime data
-# ========================
-storage/app/private/*
-storage/framework/*
-storage/logs/*
-storage/mail/*
-database/*.sqlite
-/.docs-build-*/
-
-# ========================
-# Orionis utilities
-# ========================
-*.ps1
-DOCS.ps1
-PUBLISH.ps1
-
-# ========================
 # Python
-# ========================
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-!*.pyi
 .venv/
-venv/
-env/
 .env
+uv.lock
 
-# ========================
-# Testing and coverage
-# ========================
-.coverage
-.coverage.*
-htmlcov/
-.pytest_cache/
-.mypy_cache/
+# Orionis runtime data
+/storage/app/private/*
+/storage/framework/*
+/storage/logs/*
+/database/*.sqlite
 
-# ========================
-# Distribution and packaging
-# ========================
-build/
-dist/
-*.egg-info/
-.eggs/
+# Ruff
+/.ruff_cache/
 
-# ========================
-# IDEs
-# ========================
-.vscode/
-.idea/
-.ruff_cache/
+# IDEs and AI tools
+/.vscode/
+/.idea/
+/.cursor/
+/.windsurf/
+/.claude/
+/.gemini/
+/.continue/
 
-# ========================
-# Local GitHub configuration
-# ========================
-.github/*.md
-
-# ========================
-# Logs and caches
-# ========================
-*.log
-*.cache
-.uv-cache-task
-
-# ========================
-# Operating system
-# ========================
+# Operating system files
 .DS_Store
 Thumbs.db

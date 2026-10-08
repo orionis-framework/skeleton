@@ -24,7 +24,11 @@ class Scheduler(BaseScheduler):
         None
             This method does not return any value.
         """
-        # ...
+        # Register the inspire command to run every fifteen seconds.
+        schedule.command("app:inspire")\
+            .purpose("Test Inspire Command")\
+            .maxInstances(1)\
+            .everySeconds(15)
 
     async def onStarted(self, event: SchedulerEvent) -> None:
         """
