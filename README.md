@@ -53,49 +53,6 @@ same process with bytecode writes disabled; it does not require a `reactor`
 script. Command arguments and exit codes are preserved. The legacy command
 `python -B reactor serve` remains available.
 
-## Native MCP servers
-
-Expose application services through MCP **2026-07-28** using the existing Orionis
-container, schemas, authentication and HTTP pipeline. The same server declaration
-supports Streamable HTTP through ASGI/RSGI and local STDIO:
-
-```python
-# routes/ai.py
-from orionis.mcp import McpResponse, Server, Tool
-from orionis.support.facades.mcp import Mcp
-
-
-class StatusTool(Tool):
-    async def handle(self) -> McpResponse:
-        return McpResponse.text("ready")
-
-
-class StatusServer(Server):
-    name = "Status"
-    tools = (StatusTool,)
-
-
-Mcp.web("/mcp/status", StatusServer)
-Mcp.local("status", StatusServer)
-```
-
-Configure `app.withRouting(ai="routes/ai.py")` before `app.create()`. Start the
-local server with `python reactor mcp:start status`. Every request declares its
-version and capabilities; no initialization session is required.
-
-Read the [MCP guide](orionis/mcp/docs/README.md) or [guía en español](orionis/mcp/docs/README.es.md)
-for typed tools, resources, prompts, HTTP headers, security, subscriptions and
-verification commands.
-
-## Repositories
-
-- [Framework Core](https://github.com/orionis-framework/framework) — source code for the framework.
-- [Application Skeleton](https://github.com/orionis-framework/skeleton) — starting point for Orionis applications.
-- [Documentation](https://github.com/orionis-framework/docs) — source for the documentation website.
-- [CLI Installer](https://github.com/orionis-framework/installer) — command-line installer.
-- [Website](https://github.com/orionis-framework/web) — source for the project website.
-- [Inertia Adapter](https://github.com/orionis-framework/inertia-orionis) — Orionis integration for Inertia.js.
-
 ## Contributing
 
 Contributions and feedback are welcome. Report bugs or request features in
