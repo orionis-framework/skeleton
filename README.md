@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://docs.orionis-framework.com/prologue/logo.png" alt="Orionis Framework" width="180" />
+  <img src="https://orionis-framework.com/favicon.svg" alt="Orionis Framework" width="180" />
 </p>
 
 <h1 align="center">Orionis Framework</h1>
@@ -7,7 +7,7 @@
 <h3 align="center">Write Python. Build the whole application.</h3>
 
 <p align="center">
-  Async-first Python framework for web applications and APIs.
+  The async-first, full-stack framework for modern Python applications.
 </p>
 
 <p align="center">
@@ -18,7 +18,9 @@
 </p>
 
 <p align="center">
+  <a href="#installation">Get Started</a> &bull;
   <a href="https://docs.orionis-framework.com/">Documentation</a> &bull;
+  <a href="#http-benchmarks">Benchmarks</a> &bull;
   <a href="#repositories">Repositories</a> &bull;
   <a href="https://orionis-framework.com/">Website</a>
 </p>
@@ -27,39 +29,83 @@
 
 ## About Orionis
 
-Orionis is an open-source, async-first Python framework for building web
-applications and APIs. This repository contains the framework core. To start
-a new application, visit the [Orionis Skeleton repository](https://github.com/orionis-framework/skeleton).
+Orionis brings a complete application framework to asynchronous Python.
+Build web applications, APIs and real-time services with expressive APIs,
+clear conventions and a foundation that connects the pieces for you.
 
-## Learning Orionis
+An application is more than its HTTP endpoints. Orionis brings routing,
+data, security, background work and developer tools into one cohesive
+experience, so you can spend more time building your application.
 
-Visit the [official documentation](https://docs.orionis-framework.com/) for
-guides and reference material. You can also explore the [project website](https://orionis-framework.com/)
-or find the package on [PyPI](https://pypi.org/project/orionis/).
+- **Expressive routing** with controllers, middleware and ASGI / RSGI support.
+- **A powerful service container** with dependency injection, scoped services,
+  service providers and facades.
+- **An async ORM** with fluent queries, model relationships, migrations,
+  factories and seeders.
+- **Authentication and authorization** with sessions, API tokens, roles,
+  permissions and policies.
+- **Typed validation and server-rendered views** with reusable schema rules,
+  Jinja2 templates and localization.
+- **Queues and task scheduling** for background jobs and recurring commands.
+- **Everyday application services** for caching, mail, logging and local or
+  cloud file storage.
+- **Real-time and MCP support** with WebSockets, server-sent events and
+  Model Context Protocol servers.
+- **Integrated developer tooling** with code generators, an application CLI
+  and an async-aware test runner.
 
-## Application CLI
+From a small API to a full web application, start with the same tools and
+extend them through your own services and providers.
 
-From the application root, run commands through the installed `orionis` entry
-point:
+## Installation
+
+You will need **Python 3.14+** and [uv](https://docs.astral.sh/uv/).
+Create a new application with the Orionis installer:
+
+```shell
+uvx --from orionis-installer orionis new
+```
+
+Then, from your application's directory, install its dependencies and start
+the development server:
 
 ```shell
 uv sync
 uv run orionis serve
 ```
 
-With the project's virtual environment activated, run `orionis serve` directly.
-The entry point loads the project's `bootstrap.app` and runs commands in the
-same process with bytecode writes disabled; it does not require a `reactor`
-script. Command arguments and exit codes are preserved. The legacy command
-`python -B reactor serve` remains available.
+Explore the available commands with `uv run orionis list`.
+This repository contains the framework core; the installer creates your
+application from the [application skeleton](https://github.com/orionis-framework/skeleton).
+
+## Learning Orionis
+
+The [official documentation](https://docs.orionis-framework.com/) is the place
+to start, with guides and reference material for building with Orionis.
+
+Visit the [project website](https://orionis-framework.com/) for an overview,
+explore the [package on PyPI](https://pypi.org/project/orionis/), or ask questions
+in [GitHub Discussions](https://github.com/orgs/orionis-framework/discussions).
+
+## Repositories
+
+- [Framework Core](https://github.com/orionis-framework/framework): the framework source code.
+- [Application Skeleton](https://github.com/orionis-framework/skeleton): the starting point for new applications.
+- [Documentation](https://github.com/orionis-framework/docs): guides and documentation website.
+- [CLI Installer](https://github.com/orionis-framework/installer): create a new Orionis application.
+- [Website](https://github.com/orionis-framework/web): the Orionis project website.
 
 ## Contributing
 
-Contributions and feedback are welcome. Report bugs or request features in
-[GitHub Issues](https://github.com/orionis-framework/framework/issues), or join
-the conversation in [GitHub Discussions](https://github.com/orgs/orionis-framework/discussions).
+Help shape Orionis through code, documentation, bug reports and ideas.
+Report bugs or request features in
+[GitHub Issues](https://github.com/orionis-framework/framework/issues), and
+discuss ideas in [GitHub Discussions](https://github.com/orgs/orionis-framework/discussions).
 
 ## Sponsors
+
+Support the ongoing development and maintenance of Orionis through
+[GitHub Sponsors](https://github.com/sponsors/rmunate).
 
 <a href="https://github.com/sponsors/rmunate"><img src="https://img.shields.io/badge/Sponsor_Orionis-GitHub-db2777?style=for-the-badge&amp;logo=github-sponsors&amp;logoColor=white" alt="Sponsor Orionis" /></a>
 
@@ -68,4 +114,6 @@ the conversation in [GitHub Discussions](https://github.com/orgs/orionis-framewo
 Created and maintained by
 [Raul Mauricio Uñate Castro](https://www.linkedin.com/in/raul-mauricio-unate-castro/).
 
-Orionis is open-source software released under the [MIT license](LICENCE).
+## License
+
+Orionis is open-source software licensed under the [MIT license](LICENCE).
