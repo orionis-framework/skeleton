@@ -1,8 +1,6 @@
 from pathlib import Path
 from orionis import Application
-from app.console.scheduler import Scheduler
 from app.exceptions.handler import ExceptionHandler
-from app.http.middleware.global_middleware import GlobalMiddleware
 from app.providers.app_service_provider import AppServiceProvider
 from bootstrap.lifespan import register_lifespan_callbacks
 
@@ -38,21 +36,12 @@ app.withRouting(
     health="/up",
 )
 
-# Attach the scheduler for scheduled CLI jobs.
-app.withScheduler(Scheduler)
-
 # Set the global exception handler for unhandled exceptions.
 app.withExceptionHandler(ExceptionHandler)
 
 # Register service providers for dependency injection.
 app.withProviders(
     AppServiceProvider,
-    # ...
-)
-
-# Register global middleware for HTTP request processing.
-app.withMiddleware(
-    GlobalMiddleware,
     # ...
 )
 
