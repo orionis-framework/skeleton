@@ -1,0 +1,26 @@
+import sys
+from orionis.aio import Loop
+from orionis.console.stdio import protocol_stdio
+
+if __name__ == "__main__":
+    """
+    Entry point for the reactor CLI.
+
+    Parameters
+    ----------
+    argv : list[str]
+        The command-line arguments passed to the application.
+
+    Returns
+    -------
+    int
+        The exit code returned by the reactor loop.
+    """
+    with protocol_stdio(sys.argv):
+        from bootstrap.app import app
+
+        sys.exit(
+            Loop.run(
+                app.handleCommand(sys.argv),
+            ),
+        )

@@ -1,0 +1,52 @@
+[lint]
+select = ["ALL"]
+ignore = [
+    "CPY001",
+    "D100",
+    "D101",
+    "D104",
+    "ERA001",
+    "F401",
+    "I001",
+    "I002",
+    "INP001",
+    "N802",
+    "N818",
+    "PLR0917",
+    "TRY300",
+    "TRY301",
+    "TC001",
+    "TC002",
+    "PT009",
+]
+
+[lint.per-file-ignores]
+"app/**" = [
+    "ARG002",
+    "BLE001",
+    "TC002",
+]
+"app/console/commands/**" = [
+    "RUF012",
+]
+"app/http/schemas/constraints/**" = [
+    "PLR2004",
+]
+"app/models/**" = [
+    "FBT003",
+    "RUF012",
+]
+"config/**" = [
+    "E501",
+]
+"database/**" = [
+    "E501",
+    "S608",
+]
+"routes/**" = [
+    "E501",
+    "S608",
+]
+
+[lint.pydocstyle]
+convention = "numpy"

@@ -1,0 +1,18 @@
+[project]
+name = "orionis-skeleton"
+version = "0.2.0"
+description = "An application built with Orionis Framework."
+readme = "README.md"
+requires-python = ">=3.14"
+
+dependencies = [
+    "orionis>=0.805.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.16.8",
+]
+
+[tool.uv]
+package = false

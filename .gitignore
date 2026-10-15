@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.env
+uv.lock
+
+# Orionis runtime data
+/storage/app/private/*
+/storage/framework/*
+/storage/logs/*
+/database/*.sqlite
+
+# Ruff
+/.ruff_cache/
+
+# IDEs and AI tools
+/.vscode/
+/.idea/
+/.cursor/
+/.windsurf/
+/.claude/
+/.gemini/
+/.continue/
+
+# Operating system files
+.DS_Store
+Thumbs.db
