@@ -25,6 +25,8 @@ class CreateAdminAuthorizationSeeder(Seeder):
         """
         Seed authorization using the application's real model and registrar.
 
+        Run ``migrate`` and ``auth:migrate`` before invoking this seeder.
+
         Returns
         -------
         None

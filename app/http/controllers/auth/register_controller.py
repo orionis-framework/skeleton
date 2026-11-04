@@ -32,7 +32,7 @@ class RegisterController(BaseRegisterController):
         Parameters
         ----------
         payload : RegisterSchema
-            Incoming request carrying the submitted account data.
+            Validated account data supplied by schema injection.
 
         request : Request
             Current request and its trusted execution context.

@@ -28,13 +28,10 @@ app.compile(
 # Register callbacks for a specific application lifespan event.
 register_lifespan_callbacks(app)
 
-# Register route files for the different runtime contexts.
+# Register browser routes, console commands and the health endpoint.
 app.withRouting(
-    ai="routes/ai.py",
-    api="routes/api.py",
     console="routes/console.py",
     web="routes/web.py",
-    websocket="routes/websocket.py",
     health="/up",
 )
 
