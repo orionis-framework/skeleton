@@ -1,5 +1,6 @@
 {% extends "layouts/app.html" %}
 {% set user = auth().user() %}
+{% set can_administer = auth().can("full_access") %}
 
 {% block title %}{{ page_title }}{% endblock %}
 

@@ -1,3 +1,4 @@
+from app.http.middleware.administration_middleware import AdministrationMiddleware
 from app.http.controllers.home_controller import HomeController
 from app.http.controllers.admin.administration_controller import AdministrationController
 from app.http.controllers.profile.profile_controller import ProfileController
@@ -24,7 +25,7 @@ Route.group(middleware=AuthenticateMiddleware, routes=[
         Route.post("/password", [ProfileController, "changePassword"]).name("profile.password"),
     ]),
 
-    Route.group(prefix="/admin", routes=[
+    Route.group(prefix="/admin", middleware=AdministrationMiddleware, routes=[
         Route.get("/roles", [AdministrationController, "roles"]).name("admin.roles"),
         Route.get("/users", [AdministrationController, "users"]).name("admin.users"),
     ]),
