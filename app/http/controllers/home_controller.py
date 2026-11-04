@@ -3,7 +3,7 @@ from orionis.http.base import BaseController
 
 class HomeController(BaseController):
 
-   async def health(self) -> JSONResponse:
+    async def health(self) -> JSONResponse:
         """
         Return the health status of the API.
 

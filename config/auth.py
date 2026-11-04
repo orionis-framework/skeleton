@@ -12,14 +12,15 @@ class BootstrapAppAuth(Auth):
     # default : Guards | str, optional
     # --- Guard applied when a middleware or a facade call does not name one.
     # --- Defaults to the value of the 'AUTH_GUARD' environment variable or
-    # --- Guards.SESSION.
+    # --- Guards.TOKEN for this API-only application.
     # ----------------------------------------------------------------------------------
     default: Guards | str = field(
-        default_factory=lambda: Env.get("AUTH_GUARD", Guards.SESSION),
+        default_factory=lambda: Env.get("AUTH_GUARD", Guards.TOKEN),
     )
 
     # ----------------------------------------------------------------------------------
     # identity : Identity | dict, optional
+    # --- Create this optional identity model before enabling authenticated routes.
     # --- Model backing the authenticated identity, plus the attributes used to look it
     # --- up and to verify the submitted password. Defaults to the value of the
     # --- 'AUTH_MODEL' environment variable or 'app.models.user.User'.

@@ -1,114 +1,75 @@
 <p align="center">
-  <img src="https://docs.orionis-framework.com/prologue/logo.png" alt="Orionis Framework" width="180" />
+  <img src="https://orionis-framework.com/favicon.svg" alt="Orionis Framework" width="180" />
 </p>
 
-<h1 align="center">Orionis Framework</h1>
+<h1 align="center">Orionis Slim API Skeleton</h1>
 
-<h3 align="center">Write Python. Build the whole application.</h3>
-
-<p align="center">
-  Async-first Python framework for web applications and APIs.
-</p>
-
-<p align="center">
-  <a href="https://pypi.org/project/orionis/"><img src="https://img.shields.io/pypi/v/orionis?color=007f8b&amp;style=flat-square" alt="PyPI version" /></a>
-  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.14%2B-3776ab?style=flat-square&amp;logo=python&amp;logoColor=white" alt="Python 3.14+" /></a>
-  <a href="https://github.com/orionis-framework/framework/actions/workflows/test.yml"><img src="https://github.com/orionis-framework/framework/actions/workflows/test.yml/badge.svg?branch=1.x" alt="Test suite" /></a>
-  <a href="LICENCE"><img src="https://img.shields.io/badge/license-MIT-16803d?style=flat-square" alt="MIT license" /></a>
-</p>
+<p align="center">Write Python. Build the whole application.</p>
 
 <p align="center">
   <a href="https://docs.orionis-framework.com/">Documentation</a> &bull;
-  <a href="#repositories">Repositories</a> &bull;
+  <a href="https://api.orionis-framework.com/">API reference</a> &bull;
   <a href="https://orionis-framework.com/">Website</a>
 </p>
 
----
+This is the **minimal HTTP API skeleton** from the `slim_api_1.x` branch. It registers API routes and a health endpoint, with a global middleware, a service provider, and an exception handler. The framework implementation is installed as the `orionis` dependency.
 
-## About Orionis
+## Requirements and setup
 
-Orionis is an open-source, async-first Python framework for building web
-applications and APIs. This repository contains the framework core. To start
-a new application, visit the [Orionis Skeleton repository](https://github.com/orionis-framework/skeleton).
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.5 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
-## Learning Orionis
-
-Visit the [official documentation](https://docs.orionis-framework.com/) for
-guides and reference material. You can also explore the [project website](https://orionis-framework.com/)
-or find the package on [PyPI](https://pypi.org/project/orionis/).
-
-## Application CLI
-
-From the application root, run commands through the installed `orionis` entry
-point:
+Run commands from this application's root. For a new checkout, copy `.env.example` to `.env` if `.env` does not already exist. Use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
 ```shell
 uv sync
+uv run orionis key:generate
+```
+
+`key:generate` stores a new `APP_KEY` in `.env` and preserves an existing key unless explicitly forced. The example sets `APP_URL` to `http://127.0.0.1:8000`, matching the development server. Adjust it to the application's base URL and review the selected services in `config/`. `.env.reference` documents additional configuration variables.
+
+## Run and test
+
+```shell
 uv run orionis serve
+uv run orionis test
+uv run ruff check .
 ```
 
-With the project's virtual environment activated, run `orionis serve` directly.
-The entry point loads the project's `bootstrap.app` and runs commands in the
-same process with bytecode writes disabled; it does not require a `reactor`
-script. Command arguments and exit codes are preserved. The legacy command
-`python -B reactor serve` remains available.
+`serve` starts the development server; stop it before running other foreground commands in the same terminal. Inspect registered routes with `uv run orionis route:list` and available commands with `uv run orionis list`. The bundled `reactor` script remains an alternative, for example `uv run python -B reactor test`.
 
-## Native MCP servers
+## Included routes and extension points
 
-Expose application services through MCP **2026-07-28** using the existing Orionis
-container, schemas, authentication and HTTP pipeline. The same server declaration
-supports Streamable HTTP through ASGI/RSGI and local STDIO:
+- `GET /api/example`: `HomeController.health()` returns the example API status as JSON.
+- `GET /up`: the built-in application health endpoint.
+- `routes/api.py`: add API routes here; the example is grouped under `/api`.
+- `app/http/middleware/global_middleware.py`: the initial middleware delegates to the next handler.
+- `app/providers/app_service_provider.py`: register application services.
 
-```python
-# routes/ai.py
-from orionis.mcp import McpResponse, Server, Tool
-from orionis.support.facades.mcp import Mcp
+There is no browser welcome route at `/`, and WEB, WebSocket, console-route, and MCP files are not registered by this variant. Native CLI commands, including `test` and `serve`, remain available. Add another runtime explicitly in `bootstrap/app.py` when your application needs it.
 
+The example endpoint is public. `config/auth.py` selects the token guard for optional API authentication. Before protecting routes, create an identity model and its business migrations, set `AUTH_MODEL` if its path differs from `app.models.user.User`, and prepare token storage with `uv run orionis auth:migrate`. This minimal template does not include a user model or browser login flow.
 
-class StatusTool(Tool):
-    async def handle(self) -> McpResponse:
-        return McpResponse.text("ready")
+## Configuration and application data
 
+The API configuration includes `app`, `http`, `auth`, `hashing`, `database`, `cache`, `filesystems`, `logging`, `mail`, `queue`, and `testing`. `http.py` exposes request and upload limits, trusted proxies, allowed hosts, CORS, and rate limiting. Browser sessions, views, MCP, Realtime, and scheduler configuration are not part of this variant. Add their configuration and runtime registration explicitly if your application needs those services.
 
-class StatusServer(Server):
-    name = "Status"
-    tools = (StatusTool,)
+The template has no application migrations. The example endpoint requires no tables. `database/migrations/`, `database/schemas/`, `database/factories/`, and `database/seeders/` contain only placeholders for application-owned data; add models under `app/models/` and request schemas under `app/http/schemas/`. If you enable SQL token, cache, or queue storage, use the relevant [internal storage command](https://docs.orionis-framework.com/en/database/commands#internal-storage-commands) with its configured connection. Business tables still require application migrations.
 
+The tracked `database/` directory is ready for the default SQLite connection. SQLite creates `database/database.sqlite` when a SQL operation first opens it; database files and their journal sidecars are excluded from Git. An alternative database path needs an existing parent directory.
 
-Mcp.web("/mcp/status", StatusServer)
-Mcp.local("status", StatusServer)
-```
+## Framework conventions
 
-Configure `app.withRouting(ai="routes/ai.py")` before `app.create()`. Start the
-local server with `python reactor mcp:start status`. Every request declares its
-version and capabilities; no initialization session is required.
+Class methods use `camelCase`, `_camelCase`, or `__camelCase`; functions outside classes use `snake_case`. Python protocol methods retain their required names, such as `__init__`. Document Python APIs with NumPy-style docstrings.
 
-Read the [MCP guide](orionis/mcp/docs/README.md) or [guía en español](orionis/mcp/docs/README.es.md)
-for typed tools, resources, prompts, HTTP headers, security, subscriptions and
-verification commands.
+Schema validation remains strict outside the scope of an explicit `Coerce()` marker. Schemas support coercion before type, constraint, and rule checks, and the complementary `Empty()` and `NoEmpty()` rules. See [schema declarations](https://docs.orionis-framework.com/en/validation/declaring-schemas#field-coercion) and [empty-value rules](https://docs.orionis-framework.com/en/validation/application-rules#empty-and-no-empty) when defining application inputs. Query builders also support [`toSql()`](https://docs.orionis-framework.com/en/database/query-builder#api-tosql) for SQL inspection without executing a query.
 
-## Repositories
+## Project links
 
-- [Framework Core](https://github.com/orionis-framework/framework) — source code for the framework.
-- [Application Skeleton](https://github.com/orionis-framework/skeleton) — starting point for Orionis applications.
-- [Documentation](https://github.com/orionis-framework/docs) — source for the documentation website.
-- [CLI Installer](https://github.com/orionis-framework/installer) — command-line installer.
-- [Website](https://github.com/orionis-framework/web) — source for the project website.
-- [Inertia Adapter](https://github.com/orionis-framework/inertia-orionis) — Orionis integration for Inertia.js.
+- [Framework source](https://github.com/orionis-framework/framework)
+- [Skeleton variants](https://github.com/orionis-framework/skeleton)
+- [Documentation](https://docs.orionis-framework.com/)
+- [CLI installer](https://github.com/orionis-framework/installer)
+- [Discussions](https://github.com/orgs/orionis-framework/discussions)
+- [Support development](https://github.com/sponsors/rmunate)
 
-## Contributing
-
-Contributions and feedback are welcome. Report bugs or request features in
-[GitHub Issues](https://github.com/orionis-framework/framework/issues), or join
-the conversation in [GitHub Discussions](https://github.com/orgs/orionis-framework/discussions).
-
-## Sponsors
-
-<a href="https://github.com/sponsors/rmunate"><img src="https://img.shields.io/badge/Sponsor_Orionis-GitHub-db2777?style=for-the-badge&amp;logo=github-sponsors&amp;logoColor=white" alt="Sponsor Orionis" /></a>
-
-## Creator
-
-Created and maintained by
-[Raul Mauricio Uñate Castro](https://www.linkedin.com/in/raul-mauricio-unate-castro/).
-
-Orionis is open-source software released under the [MIT license](LICENCE).
+Created and maintained by [Raul Mauricio Uñate Castro](https://github.com/rmunate). Released under the [MIT license](LICENCE).

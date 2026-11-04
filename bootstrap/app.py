@@ -26,7 +26,6 @@ app.compile(
 # Register route files for the different runtime contexts.
 app.withRouting(
     api="routes/api.py",
-    websocket="routes/websocket.py",
     health="/up",
 )
 
