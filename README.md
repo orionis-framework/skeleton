@@ -16,7 +16,7 @@ This is the **dedicated WebSocket and realtime RPC skeleton** for the `slim_real
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.4 or later within 1.x**. The framework implementation is installed as the `orionis` dependency. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.5 or later within 1.x**. The framework implementation is installed as the `orionis` dependency. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
 Run commands from the application's root. Copy `.env.example` to `.env` if `.env` does not already exist: use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -52,6 +52,8 @@ uv run ruff check .
 Only WebSocket routes and health are registered in `bootstrap/app.py`. Native CLI commands remain available. The root `/` is not a browser application page.
 
 The tracked `storage/app/public/.gitkeep` preserves the public directory required by the development server, even though this template includes no frontend assets.
+
+This variant has no application database or migration directories because neither echo example opens a SQL connection. It also needs no translation catalogs or view templates. Add those application folders and the corresponding configuration only when extending the service to use them; framework-owned storage tables are prepared with their dedicated migration commands.
 
 ## Try the raw socket
 

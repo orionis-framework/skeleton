@@ -1,12 +1,12 @@
 [project]
-name = "orionis-skeleton"
+name = "orionis-slim-realtime"
 version = "0.2.0"
 description = "A WebSocket and realtime RPC service built with Orionis Framework."
 readme = "README.md"
 requires-python = ">=3.14"
 
 dependencies = [
-    "orionis>=1.4.0,<2.0",
+    "orionis>=1.5.0,<2.0",
 ]
 
 [dependency-groups]
