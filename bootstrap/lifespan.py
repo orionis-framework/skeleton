@@ -49,28 +49,6 @@ async def on_shutdown_cli() -> None:
     """
     # Add CLI shutdown behavior here.
 
-async def on_startup_http() -> None:
-    """
-    Handle HTTP startup.
-
-    Returns
-    -------
-    None
-        Complete the callback without additional HTTP startup behavior.
-    """
-    # Add HTTP startup behavior here.
-
-async def on_shutdown_http() -> None:
-    """
-    Handle HTTP shutdown.
-
-    Returns
-    -------
-    None
-        Complete the callback without additional HTTP shutdown behavior.
-    """
-    # Add HTTP shutdown behavior here.
-
 def register_lifespan_callbacks(app: IApplication) -> None:
     """
     Register application callbacks through the native lifecycle API.
@@ -90,5 +68,3 @@ def register_lifespan_callbacks(app: IApplication) -> None:
     app.on(Lifespan.SHUTDOWN, on_shutdown)
     app.on(Lifespan.STARTUP, on_startup_cli, runtime=Runtime.CLI)
     app.on(Lifespan.SHUTDOWN, on_shutdown_cli, runtime=Runtime.CLI)
-    app.on(Lifespan.STARTUP, on_startup_http, runtime=Runtime.HTTP)
-    app.on(Lifespan.SHUTDOWN, on_shutdown_http, runtime=Runtime.HTTP)

@@ -1,12 +1,12 @@
 [project]
-name = "orionis-skeleton"
+name = "orionis-slim-worker"
 version = "0.2.0"
-description = "An application built with Orionis Framework."
+description = "A CLI, queue worker, and scheduler built with Orionis Framework."
 readme = "README.md"
 requires-python = ">=3.14"
 
 dependencies = [
-    "orionis>=0.932.0",
+    "orionis>=1.4.0,<2.0",
 ]
 
 [dependency-groups]

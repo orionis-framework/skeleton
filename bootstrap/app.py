@@ -1,49 +1,20 @@
 from pathlib import Path
 from orionis import Application
+from app.console.scheduler import Scheduler
 from app.exceptions.handler import ExceptionHandler
 from app.providers.app_service_provider import AppServiceProvider
 from bootstrap.lifespan import register_lifespan_callbacks
 
-# Create the application instance with caching enabled.
-app = Application(
-    base_path=Path(__file__).parent.parent,
-)
+app = Application(base_path=Path(__file__).parent.parent)
 
-# Compile the application with caching and invalidation paths.
 app.compile(
     path="storage/framework/bootstrap",
-    invalidation_paths=[
-        "app",
-        "bootstrap",
-        "config",
-        "database",
-        "resources",
-        "routes",
-        ".env",
-    ],
+    invalidation_paths=["app", "bootstrap", "config", "database", "routes", ".env"],
 )
 
-# Register callbacks for a specific application lifespan event.
 register_lifespan_callbacks(app)
-
-# Register route files for the different runtime contexts.
-app.withRouting(
-    ai="routes/ai.py",
-    api="routes/api.py",
-    console="routes/console.py",
-    web="routes/web.py",
-    websocket="routes/websocket.py",
-    health="/up",
-)
-
-# Set the global exception handler for unhandled exceptions.
+app.withRouting(console="routes/console.py")
+app.withScheduler(Scheduler)
 app.withExceptionHandler(ExceptionHandler)
-
-# Register service providers for dependency injection.
-app.withProviders(
-    AppServiceProvider,
-    # ...
-)
-
-# Boot the application and prepare the runtime environment.
+app.withProviders(AppServiceProvider)
 app.create()

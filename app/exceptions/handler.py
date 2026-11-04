@@ -2,7 +2,6 @@ from typing import ClassVar
 from orionis.console import Console
 from orionis.failure.base import BaseExceptionHandler
 from orionis.failure.entities import Throwable
-from orionis.http import Request, Response
 from orionis.logging.contracts import ILogger
 
 class ExceptionHandler(BaseExceptionHandler):
@@ -55,26 +54,3 @@ class ExceptionHandler(BaseExceptionHandler):
         """
         # Delegate CLI rendering to the base exception handler.
         return await super().handleCLI(exception, console)
-
-    async def handleHTTP(
-        self,
-        exception: Exception,
-        request: Request,
-    ) -> Response | None:
-        """
-        Handle the exception for HTTP responses.
-
-        Parameters
-        ----------
-        exception : Exception
-            The exception instance that was caught.
-        request : Request [Dependency Injection]
-            The HTTP request instance that was being processed.
-
-        Returns
-        -------
-        Response | None
-            The HTTP response representing the error, or None if not handled.
-        """
-        # Delegate HTTP handling to the base exception handler.
-        return await super().handleHTTP(exception, request)
