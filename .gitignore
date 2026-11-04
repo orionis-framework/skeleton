@@ -3,13 +3,18 @@ __pycache__/
 *.py[cod]
 .venv/
 .env
+.env.*
+!.env.example
+!.env.reference
 uv.lock
 
 # Orionis runtime data
 /storage/app/private/*
 /storage/framework/*
 /storage/logs/*
+/storage/mail/*
 /database/*.sqlite
+/database/*.sqlite-*
 
 # Ruff
 /.ruff_cache/
