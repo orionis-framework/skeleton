@@ -16,7 +16,7 @@ This is the **CLI and background worker skeleton** from the `slim_worker_1.x` br
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.4 or later within 1.x**. Run commands from the application's root. Copy `.env.example` to `.env` for a new checkout: use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Preserve an existing application's environment and key.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.5 or later within 1.x**. Run commands from the application's root. Copy `.env.example` to `.env` for a new checkout: use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Preserve an existing application's environment and key.
 
 ```shell
 uv sync
@@ -26,7 +26,9 @@ uv run orionis queue:migrate
 
 The initial `uv sync` creates a local `uv.lock`; that generated file is not included in the template. `key:generate` stores `APP_KEY` and preserves an existing key unless explicitly forced.
 
-The example uses SQLite at `database/database.sqlite`, file cache, and the **database queue connection**. The tracked `database/.gitkeep` preserves the database directory in a fresh checkout. `queue:migrate` creates the framework's job and failed-job tables, preserving existing records. Configure another SQL connection before running it if needed. `.env.reference` documents optional application, database, filesystem, cache, logging, queue, scheduler, and testing settings.
+The example uses SQLite at `database/database.sqlite`, file cache, and the **database queue connection**. Tracked placeholders preserve `database/factories/`, `database/migrations/`, `database/schemas/`, and `database/seeders/` in a fresh checkout. `queue:migrate` creates the framework's job and failed-job tables, preserving existing records. Configure another SQL connection before running it if needed. `.env.reference` documents optional application, database, filesystem, cache, logging, queue, scheduler, and testing settings.
+
+The database folders start empty: the sample job needs only framework-owned queue tables. Add application migrations and their schemas when your jobs need business data; add factories and seeders for that data. Keep framework storage preparation in commands such as `queue:migrate`, `cache:migrate`, and `schedule:migrate`, rather than duplicating those tables in application migrations.
 
 ## Dispatch and consume a job
 
@@ -62,7 +64,7 @@ Scheduler definitions use the process-local `memory` store by default; queued me
 - `app/providers/app_service_provider.py`: application service bindings.
 - `routes/console.py`: extension point for additional console routes; command classes are discovered under `app/console/commands`.
 - `config/`: application, database, cache, filesystems, logging, queues, scheduler, and testing configuration.
-- `database/`: directory for the default SQLite database and future application migrations.
+- `database/`: SQLite destination plus empty factories, migrations, schemas, and seeders directories for application-owned data.
 - `tests/`: serialization, execution, and awaited-dispatch regression tests without application database writes.
 
 Runtime storage is created as needed. Environment files, databases, logs, cache files, and other private runtime output are excluded from version control.
