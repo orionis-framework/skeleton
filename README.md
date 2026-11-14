@@ -16,7 +16,7 @@ This is the **blank application skeleton** from the `blank_1.x` branch. It regis
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.5 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
 Run commands from this application's root. For a new checkout, copy `.env.example` to `.env` if `.env` does not already exist. Use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -71,6 +71,12 @@ The template includes the `database/` directory for the default SQLite connectio
 Authentication is an extension point: add your identity model and its migrations before protecting routes. The default `AUTH_MODEL` expects `app.models.user.User`; no user model or authentication screens are included in this blank template.
 
 The minimal environment uses SQLite, file cache and sessions, synchronous queues, and local application settings. It needs no external service to start. Configure mail if you add email-dependent features. Optional values and framework fallbacks remain in `.env.reference` and `config/`.
+
+## Runtime compatibility
+
+This template targets Orionis 1.6.0. `app/exceptions/handler.py` uses `handleFailure(exception, context)` and `handleResult(value, context)`, returning the inherited deferred handling plan so the runtime can log and present failures once. Customize these hooks for application policy.
+
+`config/app.py` defaults to authenticated `AES-256-GCM`, matching the framework. Legacy CBC ciphers are no longer supported. Before upgrading an existing application that uses CBC, migrate its encrypted values offline using the previous compatible framework version, then switch `APP_CIPHER` to a supported GCM cipher. Preserve the existing application key; Orionis 1.6 cannot start with a CBC cipher or decrypt legacy CBC payloads.
 
 ## Framework conventions
 
