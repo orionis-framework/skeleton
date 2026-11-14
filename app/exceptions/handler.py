@@ -1,56 +1,64 @@
 from typing import ClassVar
-from orionis.console import Console
 from orionis.failure.base import BaseExceptionHandler
-from orionis.failure.entities import Throwable
-from orionis.logging.contracts import ILogger
+from orionis.failure.entities import FailureContext, FailureHandling
 
 class ExceptionHandler(BaseExceptionHandler):
+    """Select deferred logging and presentation for each application failure."""
 
     # Exceptions that should not be caught by the handler
     dont_catch: ClassVar[frozenset[type[BaseException]]] = frozenset()
 
-    async def report(
+    async def handleFailure(
         self,
-        exception: Exception,
-        log: ILogger,
-    ) -> Throwable | None:
-        """
-        Report or log an exception.
+        exception: BaseException,
+        context: FailureContext,
+    ) -> FailureHandling | None:
+        """Receive runtime exceptions after successful application startup.
 
         Parameters
         ----------
-        exception : Exception
-            The exception instance that was caught.
-        log : ILogger [Dependency Injection]
-            The logger instance for error reporting.
+        exception : BaseException
+            Original exception, including expected failures.
+        context : FailureContext
+            Immutable origin, phase and correlation of the failure.
 
         Returns
         -------
-        Throwable or None
-            The structured Throwable object if reported, otherwise None.
-        """
-        # Delegate reporting to the base exception handler.
-        return await super().report(exception, log)
+        FailureHandling | None
+            Incident plan whose logging and presentation the runtime executes.
 
-    async def handleCLI(
-        self,
-        exception: Exception,
-        console: Console,
-    ) -> None:
+        Notes
+        -----
+        Add shared application policy here and return the inherited plan to
+        preserve default logging and responses. The runtime calls this hook
+        once, completes logging, and leaves presentation to the protocol owner.
+        Keep incident state local to avoid mixing concurrent operations.
         """
-        Render the exception message for CLI output.
+        return await super().handleFailure(exception, context)
+
+    async def handleResult(
+        self,
+        value: object,
+        context: FailureContext,
+    ) -> FailureHandling | None:
+        """Receive declared failed outcomes that did not raise an exception.
 
         Parameters
         ----------
-        exception : Exception
-            The exception instance that was caught.
-        console : Console [Dependency Injection]
-            The console instance for output.
+        value : object
+            Failed outcome supplied by its execution owner.
+        context : FailureContext
+            Immutable origin, phase and correlation of the outcome.
 
         Returns
         -------
-        None
-            This method does not return a value.
+        FailureHandling | None
+            Optional incident plan; the base implementation returns None.
+
+        Notes
+        -----
+        Add application policy here without manufacturing an exception or
+        capturing the same outcome again. Return the inherited result so that
+        later policy can supply a deferred plan without losing it.
         """
-        # Delegate CLI rendering to the base exception handler.
-        return await super().handleCLI(exception, console)
+        return await super().handleResult(value, context)
