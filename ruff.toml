@@ -1,13 +1,14 @@
 [lint]
 select = ["ALL"]
+extend-select = ["D213"]
 ignore = [
     "CPY001",
     "D100",
     "D101",
     "D104",
+    "D200",
     "ERA001",
     "F401",
-    "I001",
     "I002",
     "INP001",
     "N802",
@@ -50,3 +51,10 @@ ignore = [
 
 [lint.pydocstyle]
 convention = "numpy"
+
+[lint.isort]
+# Keep future, standard-library, dependency and application imports adjacent.
+known-first-party = ["app", "bootstrap", "config", "database", "routes", "tests"]
+no-lines-before = ["standard-library", "third-party", "first-party", "local-folder"]
+lines-after-imports = 1
+lines-between-types = 0

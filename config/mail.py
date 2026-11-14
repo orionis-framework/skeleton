@@ -2,7 +2,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.mail import (
-    File, FromAddress, Mail, MailDriver, Mailers, Smtp,
+    File,
+    FromAddress,
+    Mail,
+    MailDriver,
+    Mailers,
+    Smtp,
 )
 
 @dataclass(frozen=True, kw_only=True)
