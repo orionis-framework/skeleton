@@ -1,10 +1,9 @@
 from unittest.mock import AsyncMock, Mock, patch
-from app.console.commands.dispatch_example_command import DispatchExampleCommand
-from app.jobs.log_message_job import LogMessageJob
 from orionis.logging.contracts import ILogger
 from orionis.queues.serializer import JobSerializer
 from orionis.test import TestCase
-
+from app.console.commands.dispatch_example_command import DispatchExampleCommand
+from app.jobs.log_message_job import LogMessageJob
 
 class TestLogMessageJob(TestCase):
 

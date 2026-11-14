@@ -3,7 +3,9 @@ from orionis.failure.base import BaseExceptionHandler
 from orionis.failure.entities import FailureContext, FailureHandling
 
 class ExceptionHandler(BaseExceptionHandler):
-    """Select deferred logging and presentation for each application failure."""
+    """
+    Select deferred logging and presentation for each application failure.
+    """
 
     # Exceptions that should not be caught by the handler
     dont_catch: ClassVar[frozenset[type[BaseException]]] = frozenset()
@@ -13,7 +15,8 @@ class ExceptionHandler(BaseExceptionHandler):
         exception: BaseException,
         context: FailureContext,
     ) -> FailureHandling | None:
-        """Receive runtime exceptions after successful application startup.
+        """
+        Receive runtime exceptions after successful application startup.
 
         Parameters
         ----------
@@ -41,7 +44,8 @@ class ExceptionHandler(BaseExceptionHandler):
         value: object,
         context: FailureContext,
     ) -> FailureHandling | None:
-        """Receive declared failed outcomes that did not raise an exception.
+        """
+        Receive declared failed outcomes that did not raise an exception.
 
         Parameters
         ----------

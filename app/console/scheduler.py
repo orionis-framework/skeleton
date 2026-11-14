@@ -1,9 +1,10 @@
 from orionis.console.base import BaseScheduler
 from orionis.console.contracts import ISchedule
 
-
 class Scheduler(BaseScheduler):
-    """Schedule an example queue producer independently of queue consumption."""
+    """
+    Schedule an example queue producer independently of queue consumption.
+    """
 
     def tasks(self, schedule: ISchedule) -> None:
         """

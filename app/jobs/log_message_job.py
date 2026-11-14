@@ -2,9 +2,10 @@ from typing import ClassVar
 from orionis.logging.contracts import ILogger
 from orionis.queues import BaseJob
 
-
 class LogMessageJob(BaseJob):
-    """Log a message restored from persistent queue storage."""
+    """
+    Log a message restored from persistent queue storage.
+    """
 
     __slots__ = ("message",)
 

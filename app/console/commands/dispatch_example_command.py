@@ -1,12 +1,13 @@
 from typing import ClassVar
-from app.jobs.log_message_job import LogMessageJob
 from orionis.console import Argument
 from orionis.console.base import BaseCommand
 from orionis.support.facades import Queue
-
+from app.jobs.log_message_job import LogMessageJob
 
 class DispatchExampleCommand(BaseCommand):
-    """Submit a persistent example job for a separate queue worker."""
+    """
+    Submit a persistent example job for a separate queue worker.
+    """
 
     __slots__ = ()
 
