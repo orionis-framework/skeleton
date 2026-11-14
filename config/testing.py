@@ -2,7 +2,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.testing import (
-    Testing, VerbosityMode,
+    Testing,
+    VerbosityMode,
 )
 
 @dataclass(frozen=True, kw_only=True)

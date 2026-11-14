@@ -1,5 +1,5 @@
-from app.mcp.servers.example import ExampleServer
 from orionis.test import TestCase
+from app.mcp.servers.example import ExampleServer
 
 class TestMcp(TestCase):
 

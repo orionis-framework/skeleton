@@ -1,8 +1,9 @@
 from orionis.mcp import McpResponse, Prompt, PromptArgument
 
-
 class GreetingPrompt(Prompt):
-    """Build a reusable greeting request for an MCP client."""
+    """
+    Build a reusable greeting request for an MCP client.
+    """
 
     name = "greeting"
     description = "Prepare a greeting request for a named person."

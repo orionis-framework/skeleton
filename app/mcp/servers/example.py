@@ -4,7 +4,9 @@ from app.mcp.resources.guide import GuideResource
 from app.mcp.tools.echo import EchoTool
 
 class ExampleServer(Server):
-    """Expose application tools, resources and prompts through MCP."""
+    """
+    Expose application tools, resources and prompts through MCP.
+    """
 
     name = "ExampleServer"
     version = "1.0.0"

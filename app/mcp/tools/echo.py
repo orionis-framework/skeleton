@@ -14,7 +14,9 @@ class EchoInput(Schema):
     message: str
 
 class EchoTool(Tool[EchoInput]):
-    """Return a client message through a typed MCP tool."""
+    """
+    Return a client message through a typed MCP tool.
+    """
 
     name = "echo"
     description = "Return the supplied message without modifying it."

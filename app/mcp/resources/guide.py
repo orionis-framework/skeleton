@@ -1,8 +1,9 @@
 from orionis.mcp import McpResponse, Resource
 
-
 class GuideResource(Resource):
-    """Expose a fixed guide without opening client-supplied filesystem paths."""
+    """
+    Expose a fixed guide without opening client-supplied filesystem paths.
+    """
 
     name = "guide"
     uri = "docs://example/guide"

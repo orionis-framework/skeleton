@@ -1,5 +1,5 @@
-from app.mcp.servers.example import ExampleServer
 from orionis.support.facades import Mcp
+from app.mcp.servers.example import ExampleServer
 
 Mcp.web("/mcp", ExampleServer)
 
