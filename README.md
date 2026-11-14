@@ -16,7 +16,7 @@ This is the **minimal MCP application skeleton** from the `slim_mcp_1.x` branch.
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.5 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
 Run commands from this application's root. For a new checkout, copy `.env.example` to `.env` if `.env` does not already exist. Use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -26,6 +26,12 @@ uv run orionis key:generate
 ```
 
 `key:generate` stores a new `APP_KEY` in `.env` and preserves an existing key unless explicitly forced. The example sets `APP_URL` to `http://127.0.0.1:8000`, matching the development server. Adjust it to the application's base URL and review the selected services in `config/`. `.env.reference` documents additional configuration variables.
+
+## Framework compatibility
+
+This template targets Orionis 1.6.0. `app/exceptions/handler.py` uses the current `handleFailure(exception, context)` and `handleResult(value, context)` hooks. Return the inherited handling plan to retain deferred logging and protocol-specific presentation.
+
+New applications default to `AES-256-GCM`. Orionis 1.6.0 no longer supports CBC ciphers. Before upgrading an existing application that stores CBC-encrypted values, migrate those values offline with the previous framework version to a supported GCM cipher and preserve its `APP_KEY`. Set `APP_CIPHER` to the migrated cipher; changing the setting alone does not convert existing ciphertext.
 
 ## Run and test
 
