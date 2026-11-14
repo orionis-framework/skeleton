@@ -1,12 +1,17 @@
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.http import (
-    HTTP, HTTPProxies, HTTPSecurity, HTTPWebSocket,
+    HTTP,
+    HTTPProxies,
+    HTTPSecurity,
+    HTTPWebSocket,
 )
 
 @dataclass(frozen=True, kw_only=True)
 class BootstrapHTTP(HTTP):
-    """Configure WebSocket admission and the HTTP health endpoint."""
+    """
+    Configure WebSocket admission and the HTTP health endpoint.
+    """
 
     websocket: HTTPWebSocket | dict = field(
         default_factory=lambda: HTTPWebSocket(

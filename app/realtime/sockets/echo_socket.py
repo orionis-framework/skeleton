@@ -1,7 +1,9 @@
 from orionis.http import WebSocket, WebSocketDisconnected
 
 class EchoSocket:
-    """Handle a realtime WebSocket connection."""
+    """
+    Handle a realtime WebSocket connection.
+    """
 
     async def __call__(self, socket: WebSocket) -> None:
         """

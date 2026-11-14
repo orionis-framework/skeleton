@@ -1,6 +1,6 @@
 import asyncio
-from contextlib import asynccontextmanager
 import json
+from contextlib import asynccontextmanager
 from typing import TYPE_CHECKING
 from orionis.foundation.contracts.application import IApplication
 from orionis.realtime.contracts.manager import IConnectionManager
@@ -10,7 +10,9 @@ if TYPE_CHECKING:
     from collections.abc import AsyncIterator
 
 class WebSocketPeer:
-    """Drive the application's ASGI interface without opening a network port."""
+    """
+    Drive the application's ASGI interface without opening a network port.
+    """
 
     def __init__(
         self,

@@ -1,7 +1,9 @@
 from orionis.realtime import Hub, remote
 
 class EchoHub(Hub):
-    """Group explicitly exposed realtime operations."""
+    """
+    Group explicitly exposed realtime operations.
+    """
 
     @remote
     async def echo(self, message: str) -> str:
