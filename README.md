@@ -32,7 +32,7 @@ Each variant is distributed as a branch of this repository:
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.5 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
 Run commands from this application's root. For a new checkout, copy `.env.example` to `.env` if `.env` does not already exist. Use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -100,6 +100,12 @@ Orionis 1.5 owns authorization, personal access token, and password-reset schema
 These commands create missing tables from the framework definitions and preserve existing records. They do not execute application migrations, change incompatible schemas, or write migration history. They accept no `--database` option; select their connections in configuration. Scheduler storage uses its native table name directly; the other services honor the SQL connection prefix. See the [storage preparation guide](https://docs.orionis-framework.com/en/database/migrations#framework-storage-tables).
 
 When updating an existing application, keep its applied migrations, their schemas, and migration history so rollback can still resolve them. The removed duplicate templates are not a request to delete existing project history or data. The user migration retains its original `m0000000005` number.
+
+## Orionis 1.6.0 application hooks
+
+`app/exceptions/handler.py` uses `handleFailure(exception, context)` for runtime exceptions and `handleResult(value, context)` for declared failed outcomes. Return the inherited `FailureHandling` plan to preserve deferred logging and protocol-specific presentation. Keep incident state local to each call; the runtime owns execution of the returned plan.
+
+New applications default to `AES-256-GCM` in `config/app.py`. Orionis 1.6 accepts only `AES-128-GCM` and `AES-256-GCM`; CBC configuration and ciphertext are rejected. Before upgrading an application with CBC data, use its previous framework version and original key in a controlled offline process to recover trusted records, verify their integrity against an independent trusted source, and re-encrypt them with GCM. Preserve the application key and backups throughout this migration; there is no automatic CBC fallback.
 
 ## Conventions and validation
 
