@@ -2,7 +2,14 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.filesystems import (
-    GCS, S3, Azure, DiskName, Disks, Filesystems, Local, Public,
+    GCS,
+    S3,
+    Azure,
+    DiskName,
+    Disks,
+    Filesystems,
+    Local,
+    Public,
 )
 
 @dataclass(frozen=True, kw_only=True)

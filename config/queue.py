@@ -1,7 +1,14 @@
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.queue import (
-    Connections, Database, Drivers, Failed, Queue, Redis, Sync, Worker,
+    Connections,
+    Database,
+    Drivers,
+    Failed,
+    Queue,
+    Redis,
+    Sync,
+    Worker,
 )
 
 @dataclass(frozen=True, kw_only=True, slots=True)

@@ -1,13 +1,12 @@
 # ruff: noqa: PT027 -- Orionis TestCase uses unittest exception assertions.
 
 from unittest.mock import AsyncMock, Mock, patch
-from app.http.middleware.administration_middleware import AdministrationMiddleware
 from orionis.auth.contracts.authorizer import IAuthorizer
 from orionis.auth.contracts.context import IAuthenticationContext
 from orionis.auth.exceptions import AuthenticationException, AuthorizationException
 from orionis.http import Request, response
 from orionis.test import TestCase
-
+from app.http.middleware.administration_middleware import AdministrationMiddleware
 
 class TestAdministrationAccess(TestCase):
 

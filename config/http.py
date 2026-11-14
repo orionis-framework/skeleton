@@ -2,8 +2,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.http import (
-    HTTP, Cors, HTTPBodyLimits, HTTPCsrf, HTTPProxies, HTTPRateLimit, HTTPSecurity,
-    HTTPWebSocket, Redis,
+    HTTP,
+    Cors,
+    HTTPBodyLimits,
+    HTTPCsrf,
+    HTTPProxies,
+    HTTPRateLimit,
+    HTTPSecurity,
+    HTTPWebSocket,
+    Redis,
 )
 
 @dataclass(frozen=True, kw_only=True)

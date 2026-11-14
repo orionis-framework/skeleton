@@ -2,7 +2,13 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.auth import (
-    Auth, Guards, Identity, PasswordReset, RememberAuth, SessionAuth, Tokens,
+    Auth,
+    Guards,
+    Identity,
+    PasswordReset,
+    RememberAuth,
+    SessionAuth,
+    Tokens,
 )
 
 @dataclass(frozen=True, kw_only=True)

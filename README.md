@@ -14,7 +14,7 @@
 
 This is the full **application skeleton** from the repository's `master` branch. It provides server-rendered authentication and administration pages, an API example, and route extension points for console commands, WebSockets, and MCP. The framework implementation is installed as the `orionis` dependency.
 
-The application layout follows the framework repository's `app/`, `bootstrap/`, `config/`, `database/`, `resources/`, `routes/`, and public assets. All 17 application configuration modules are included. Framework library sources, its internal test suite, and API documentation build tools remain in the framework repository rather than the generated application.
+The application layout follows the framework repository's `app/`, `bootstrap/`, `config/`, `database/`, `resources/`, `routes/`, and public assets. All 16 application configuration modules are included. Framework library sources, its internal test suite, and API documentation build tools remain in the framework repository rather than the generated application.
 
 ## Choose a skeleton
 

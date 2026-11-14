@@ -2,7 +2,12 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.scheduler import (
-    Database, Drivers, Memory, Redis, Scheduler, Stores,
+    Database,
+    Drivers,
+    Memory,
+    Redis,
+    Scheduler,
+    Stores,
 )
 
 @dataclass(frozen=True, kw_only=True)

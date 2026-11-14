@@ -1,9 +1,10 @@
-from app.http.schemas.auth.forgot_password import ForgotPasswordSchema
 from orionis.auth.passwords.broker import PasswordBroker
-from orionis.http.default.controllers.forgot_password_controller import \
-    ForgotPasswordController as BaseForgotPasswordController
 from orionis.http import HTMLResponse, HttpResponse
+from orionis.http.default.controllers.forgot_password_controller import (
+    ForgotPasswordController as BaseForgotPasswordController,
+)
 from orionis.http.request import Request
+from app.http.schemas.auth.forgot_password import ForgotPasswordSchema
 
 class ForgotPasswordController(BaseForgotPasswordController):
 

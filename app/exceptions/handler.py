@@ -3,7 +3,9 @@ from orionis.failure.base import BaseExceptionHandler
 from orionis.failure.entities import FailureContext, FailureHandling
 
 class ExceptionHandler(BaseExceptionHandler):
-    """Select deferred logging and presentation for each application failure."""
+    """
+    Select deferred logging and presentation for each application failure.
+    """
 
     # Exceptions that should not be caught by the handler
     dont_catch: ClassVar[frozenset[type[BaseException]]] = frozenset()

@@ -1,7 +1,7 @@
-from app.models.user import User
 from orionis.auth.authorization.registrar import PermissionRegistrar
 from orionis.database.seeders.seeder import Seeder
 from orionis.support.facades import Hash
+from app.models.user import User
 
 class CreateAdminAuthorizationSeeder(Seeder):
 
