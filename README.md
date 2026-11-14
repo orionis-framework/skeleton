@@ -16,7 +16,7 @@ This is the **dedicated WebSocket and realtime RPC skeleton** for the `slim_real
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.5 or later within 1.x**. The framework implementation is installed as the `orionis` dependency. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. The framework implementation is installed as the `orionis` dependency. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
 Run commands from the application's root. Copy `.env.example` to `.env` if `.env` does not already exist: use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -26,6 +26,12 @@ uv run orionis key:generate
 ```
 
 `key:generate` preserves an existing key unless explicitly forced. `APP_URL` starts at `http://127.0.0.1:8000`, matching the development server. Advanced settings are listed in `.env.reference`.
+
+## Framework compatibility
+
+This template targets Orionis 1.6.0. `app/exceptions/handler.py` uses the current `handleFailure(exception, context)` and `handleResult(value, context)` hooks. Return the inherited handling plan to retain deferred logging and protocol-specific presentation.
+
+New applications default to `AES-256-GCM`. Orionis 1.6.0 no longer supports CBC ciphers. Before upgrading an existing application that stores CBC-encrypted values, migrate those values offline with the previous framework version to a supported GCM cipher and preserve its `APP_KEY`. Set `APP_CIPHER` to the migrated cipher; changing the setting alone does not convert existing ciphertext.
 
 ## Run and test
 
