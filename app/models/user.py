@@ -1,8 +1,8 @@
 from typing import ClassVar
-from database.schemas.users_v1 import USERS_V1
 from orionis.auth import Authenticatable, Authorizable, MustVerifyEmail
 from orionis.orm import Model
 from orionis.orm.schema.table import TableDefinition
+from database.schemas.users_v1 import USERS_V1
 
 class User(Model, Authenticatable, Authorizable, MustVerifyEmail):
 

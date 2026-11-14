@@ -1,6 +1,6 @@
 from typing import Any, Self
-from app.models.user import User
 from orionis.orm.factories import Factory
+from app.models.user import User
 
 class UserFactory(Factory[User]):
     """

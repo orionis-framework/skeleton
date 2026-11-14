@@ -1,12 +1,16 @@
-from app.http.middleware.administration_middleware import AdministrationMiddleware
-from app.http.controllers.home_controller import HomeController
-from app.http.controllers.admin.administration_controller import AdministrationController
-from app.http.controllers.profile.profile_controller import ProfileController
-from app.http.controllers.auth.register_controller import RegisterController
-from app.http.controllers.auth.login_controller import LoginController
-from app.http.controllers.auth.forgot_password_controller import ForgotPasswordController
 from orionis.auth.middleware import AuthenticateMiddleware
 from orionis.support.facades import Route
+from app.http.controllers.admin.administration_controller import (
+    AdministrationController,
+)
+from app.http.controllers.auth.forgot_password_controller import (
+    ForgotPasswordController,
+)
+from app.http.controllers.auth.login_controller import LoginController
+from app.http.controllers.auth.register_controller import RegisterController
+from app.http.controllers.home_controller import HomeController
+from app.http.controllers.profile.profile_controller import ProfileController
+from app.http.middleware.administration_middleware import AdministrationMiddleware
 
 Route.view("/", "welcome")
 

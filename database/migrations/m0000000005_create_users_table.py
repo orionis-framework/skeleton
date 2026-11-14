@@ -1,6 +1,6 @@
-from database.schemas.users_v1 import USERS_V1
 from orionis.database import Migration
 from orionis.support.facades import Schema
+from database.schemas.users_v1 import USERS_V1
 
 class CreateUsersTable(Migration):
 

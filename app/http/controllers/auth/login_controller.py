@@ -1,9 +1,10 @@
-from app.http.schemas.auth.login import LoginSchema
 from orionis.auth.contracts.manager import IAuthManager
 from orionis.http import HttpResponse
-from orionis.http.default.controllers.login_controller import \
-    LoginController as BaseLoginController
+from orionis.http.default.controllers.login_controller import (
+    LoginController as BaseLoginController,
+)
 from orionis.http.request import Request
+from app.http.schemas.auth.login import LoginSchema
 
 class LoginController(BaseLoginController):
 

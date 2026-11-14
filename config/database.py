@@ -2,10 +2,27 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from orionis.environment import Env
 from orionis.foundation.config.database import (
-    PGSQL, ConnectionName, Connections, Database, MySQL, MySQLCharset,
-    MySQLCollation, MySQLEngine, Oracle, OracleEncoding, OracleNencoding,
-    PGSQLCharset, PGSQLSSLMode, Redshift, RedshiftSSLMode, SQLite, SQLiteForeignKey,
-    SQLiteJournalMode, SQLiteSynchronous, SQLServer, SQLServerCharset,
+    PGSQL,
+    ConnectionName,
+    Connections,
+    Database,
+    MySQL,
+    MySQLCharset,
+    MySQLCollation,
+    MySQLEngine,
+    Oracle,
+    OracleEncoding,
+    OracleNencoding,
+    PGSQLCharset,
+    PGSQLSSLMode,
+    Redshift,
+    RedshiftSSLMode,
+    SQLite,
+    SQLiteForeignKey,
+    SQLiteJournalMode,
+    SQLiteSynchronous,
+    SQLServer,
+    SQLServerCharset,
 )
 
 @dataclass(frozen=True, kw_only=True)

@@ -1,10 +1,11 @@
-from app.http.schemas.profile.change_password import ChangePasswordSchema
 from orionis.auth.contracts.identity_provider import IIdentityProvider
 from orionis.auth.contracts.manager import IAuthManager
 from orionis.hashing.contracts.hash_manager import IHashManager
 from orionis.http import HTMLResponse, RedirectResponse
-from orionis.http.default.controllers.profile_controller import \
-    ProfileController as BaseProfileController
+from orionis.http.default.controllers.profile_controller import (
+    ProfileController as BaseProfileController,
+)
+from app.http.schemas.profile.change_password import ChangePasswordSchema
 
 class ProfileController(BaseProfileController):
 

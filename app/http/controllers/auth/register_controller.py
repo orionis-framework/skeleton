@@ -1,10 +1,11 @@
-from app.http.schemas.auth.register import RegisterSchema
-from app.models.user import User
 from orionis.http import HttpResponse
-from orionis.http.default.controllers.register_controller import \
-    RegisterController as BaseRegisterController
+from orionis.http.default.controllers.register_controller import (
+    RegisterController as BaseRegisterController,
+)
 from orionis.http.request import Request
 from orionis.mail.entities.result import MailResult
+from app.http.schemas.auth.register import RegisterSchema
+from app.models.user import User
 
 class RegisterController(BaseRegisterController):
 
