@@ -16,7 +16,7 @@ This is the **minimal HTTP API skeleton** from the `slim_api_1.x` branch. It reg
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.5 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
 Run commands from this application's root. For a new checkout, copy `.env.example` to `.env` if `.env` does not already exist. Use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -56,6 +56,12 @@ The API configuration includes `app`, `http`, `auth`, `hashing`, `database`, `ca
 The template has no application migrations. The example endpoint requires no tables. `database/migrations/`, `database/schemas/`, `database/factories/`, and `database/seeders/` contain only placeholders for application-owned data; add models under `app/models/` and request schemas under `app/http/schemas/`. If you enable SQL token, cache, or queue storage, use the relevant [internal storage command](https://docs.orionis-framework.com/en/database/commands#internal-storage-commands) with its configured connection. Business tables still require application migrations.
 
 The tracked `database/` directory is ready for the default SQLite connection. SQLite creates `database/database.sqlite` when a SQL operation first opens it; database files and their journal sidecars are excluded from Git. An alternative database path needs an existing parent directory.
+
+## Runtime compatibility
+
+This template targets Orionis 1.6.0. `app/exceptions/handler.py` uses `handleFailure(exception, context)` and `handleResult(value, context)`, returning the inherited deferred handling plan so the runtime can log and present failures once. Customize these hooks for application policy.
+
+`config/app.py` defaults to authenticated `AES-256-GCM`, matching the framework. Legacy CBC ciphers are no longer supported. Before upgrading an existing application that uses CBC, migrate its encrypted values offline using the previous compatible framework version, then switch `APP_CIPHER` to a supported GCM cipher. Preserve the existing application key; Orionis 1.6 cannot start with a CBC cipher or decrypt legacy CBC payloads.
 
 ## Framework conventions
 
