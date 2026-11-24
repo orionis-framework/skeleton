@@ -16,7 +16,7 @@ This is the **server-rendered application skeleton** from the `ssr_1.x` branch. 
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.9.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
 Run commands from this application's root. For a new checkout, copy `.env.example` to `.env` if `.env` does not already exist. Use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -25,7 +25,7 @@ uv sync
 uv run orionis key:generate
 ```
 
-`key:generate` stores a new `APP_KEY` in `.env` and preserves an existing key unless explicitly forced. The example sets `APP_URL` to `http://127.0.0.1:8000`, matching the development server. Adjust it to the application's base URL and review the selected services in `config/`. `.env.reference` documents additional configuration variables.
+Orionis initializes a missing `APP_KEY` in `.env` during startup. If `key:generate` reports that the key is already set, keep it. The example sets `APP_URL` to `http://127.0.0.1:8000`, matching the development server. Adjust it to the application's base URL and review the selected services in `config/`. `.env.reference` documents additional configuration variables.
 
 ## Prepare application data
 
@@ -70,7 +70,7 @@ After setup, open `/` for the welcome page or `/up` for the built-in health endp
 
 ## Framework storage tables
 
-Orionis 1.5 owns authorization, personal access token, and password-reset schemas. The project therefore keeps only `m0000000005_create_users_table.py` and `users_v1.py`, alongside the user factory and optional demonstration seeder. It does not duplicate framework storage schemas or migrations. `auth:migrate` is required for the included authentication and administration flows; prepare other services only when you select their SQL-backed drivers:
+Orionis manages authorization, personal access token, and password-reset schemas. The project therefore keeps only `m0000000005_create_users_table.py` and `users_v1.py`, alongside the user factory and optional demonstration seeder. It does not duplicate framework storage schemas or migrations. `auth:migrate` is required for the included authentication and administration flows; prepare other services only when you select their SQL-backed drivers:
 
 | Service | Preparation command | Configuration |
 | --- | --- | --- |
@@ -84,11 +84,11 @@ These commands create missing tables from the framework definitions and preserve
 
 When updating an existing application, keep its applied migrations, their schemas, and migration history so rollback can still resolve them. The removed duplicate templates are not a request to delete existing project history or data. The user migration retains its original `m0000000005` number.
 
-## Orionis 1.6.0 application hooks
+## Application hooks and encryption
 
 `app/exceptions/handler.py` uses `handleFailure(exception, context)` for runtime exceptions and `handleResult(value, context)` for declared failed outcomes. Return the inherited `FailureHandling` plan to preserve deferred logging and protocol-specific presentation. Keep incident state local to each call; the runtime owns execution of the returned plan.
 
-New applications default to `AES-256-GCM` in `config/app.py`. Orionis 1.6 accepts only `AES-128-GCM` and `AES-256-GCM`; CBC configuration and ciphertext are rejected. Before upgrading an application with CBC data, use its previous framework version and original key in a controlled offline process to recover trusted records, verify their integrity against an independent trusted source, and re-encrypt them with GCM. Preserve the application key and backups throughout this migration; there is no automatic CBC fallback.
+New applications default to `AES-256-GCM` in `config/app.py`. Orionis accepts only `AES-128-GCM` and `AES-256-GCM`; CBC configuration and ciphertext are rejected. Before upgrading an application with CBC data, use its previous framework version and original key in a controlled offline process to recover trusted records, verify their integrity against an independent trusted source, and re-encrypt them with GCM. Preserve the application key and backups throughout this migration; there is no automatic CBC fallback.
 
 ## Conventions and validation
 
