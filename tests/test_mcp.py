@@ -1,7 +1,37 @@
+from typing import TYPE_CHECKING
 from orionis.test import TestCase
 from app.mcp.servers.example import ExampleServer
 
+if TYPE_CHECKING:
+    from orionis.test.clients.mcp import McpTestResponse
+
 class TestMcp(TestCase):
+
+    def _payload(self, response: McpTestResponse, key: str = "result") -> dict:
+        """
+        Extract the expected JSON object from a protocol response.
+
+        Parameters
+        ----------
+        response : McpTestResponse
+            Decoded response returned by the test client.
+        key : str, optional
+            Expected JSON-RPC member, either ``result`` or ``error``.
+
+        Returns
+        -------
+        dict
+            Object containing the method-specific fields.
+
+        Raises
+        ------
+        AssertionError
+            If the response lacks the expected object.
+        """
+        payload = response.message.get(key)
+        if not isinstance(payload, dict):
+            self.fail(f"Expected a JSON-RPC {key} object, got {payload!r}.")
+        return payload
 
     async def testEchoToolIsDiscoverable(self) -> None:
         """
@@ -15,7 +45,7 @@ class TestMcp(TestCase):
         client = await self.mcp(ExampleServer)
         response = await client.request("tools/list")
         response.assertOk()
-        tools = response.message["result"]["tools"]
+        tools = self._payload(response)["tools"]
         self.assertEqual([tool["name"] for tool in tools], ["echo"])
         schema = tools[0]["inputSchema"]
         self.assertEqual(schema["properties"]["message"]["type"], "string")
@@ -35,7 +65,7 @@ class TestMcp(TestCase):
         response = await client.tool("echo", {"message": message})
         response.assertOk()
         self.assertEqual(
-            response.message["result"]["content"],
+            self._payload(response)["content"],
             [{"type": "text", "text": message}],
         )
 
@@ -49,10 +79,11 @@ class TestMcp(TestCase):
             Verify that invalid inputs become tool errors without coercion.
         """
         client = await self.mcp(ExampleServer)
-        for arguments in ({}, {"message": 12}, {"message": None}):
+        cases: tuple[dict[str, object], ...] = ({}, {"message": 12}, {"message": None})
+        for arguments in cases:
             with self.subTest(arguments=arguments):
                 response = await client.tool("echo", arguments)
-                self.assertTrue(response.message["result"]["isError"])
+                self.assertTrue(self._payload(response)["isError"])
                 response.assertTextContains("Invalid tool arguments")
 
     async def testGuideResourceCanBeListedAndRead(self) -> None:
@@ -67,7 +98,7 @@ class TestMcp(TestCase):
         client = await self.mcp(ExampleServer)
         catalog = await client.request("resources/list")
         catalog.assertOk()
-        resources = catalog.message["result"]["resources"]
+        resources = self._payload(catalog)["resources"]
         self.assertEqual([resource["name"] for resource in resources], ["guide"])
         self.assertEqual(resources[0]["uri"], "docs://example/guide")
 
@@ -75,7 +106,7 @@ class TestMcp(TestCase):
             "resources/read", {"uri": resources[0]["uri"]},
         )
         response.assertOk()
-        contents = response.message["result"]["contents"]
+        contents = self._payload(response)["contents"]
         self.assertEqual(len(contents), 1)
         self.assertEqual(contents[0]["uri"], "docs://example/guide")
         self.assertEqual(contents[0]["mimeType"], "text/plain")
@@ -94,7 +125,7 @@ class TestMcp(TestCase):
         response = await client.request(
             "resources/read", {"uri": "docs://example/missing"},
         )
-        self.assertEqual(response.message["error"]["code"], -32602)
+        self.assertEqual(self._payload(response, "error")["code"], -32602)
         self.assertNotIn("result", response.message)
 
     async def testGreetingPromptDeclaresItsArguments(self) -> None:
@@ -109,7 +140,7 @@ class TestMcp(TestCase):
         client = await self.mcp(ExampleServer)
         response = await client.request("prompts/list")
         response.assertOk()
-        prompts = response.message["result"]["prompts"]
+        prompts = self._payload(response)["prompts"]
         self.assertEqual([prompt["name"] for prompt in prompts], ["greeting"])
         arguments = {
             argument["name"]: argument for argument in prompts[0]["arguments"]
@@ -138,7 +169,7 @@ class TestMcp(TestCase):
                 )
                 response.assertOk()
                 self.assertEqual(
-                    response.message["result"]["messages"],
+                    self._payload(response)["messages"],
                     [{"role": "user", "content": {"type": "text", "text": expected}}],
                 )
 
@@ -163,4 +194,4 @@ class TestMcp(TestCase):
                 response = await client.request(
                     "prompts/get", {"name": "greeting", "arguments": arguments},
                 )
-                self.assertEqual(response.message["error"]["code"], -32602)
+                self.assertEqual(self._payload(response, "error")["code"], -32602)
