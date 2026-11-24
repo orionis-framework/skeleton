@@ -71,6 +71,9 @@ class WebSocketPeer:
         WebSocketPeer
             Peer connected to the application's native ASGI handler.
         """
+        if not callable(app):
+            message = "The test application must expose its ASGI entry point."
+            raise TypeError(message)
         owner = asyncio.create_task(
             app(self.scope, self.events.get, self.output.put),
         )

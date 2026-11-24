@@ -14,7 +14,7 @@ class ExceptionHandler(BaseExceptionHandler):
         self,
         exception: BaseException,
         context: FailureContext,
-    ) -> FailureHandling | None:
+    ) -> FailureHandling:
         """
         Receive runtime exceptions after successful application startup.
 
@@ -27,7 +27,7 @@ class ExceptionHandler(BaseExceptionHandler):
 
         Returns
         -------
-        FailureHandling | None
+        FailureHandling
             Incident plan whose logging and presentation the runtime executes.
 
         Notes
