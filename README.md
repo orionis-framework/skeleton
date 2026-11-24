@@ -16,7 +16,7 @@ This is the **minimal HTTP API skeleton** from the `slim_api_1.x` branch. It reg
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.9.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
 
 Run commands from this application's root. For a new checkout, copy `.env.example` to `.env` if `.env` does not already exist. Use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -25,7 +25,7 @@ uv sync
 uv run orionis key:generate
 ```
 
-`key:generate` stores a new `APP_KEY` in `.env` and preserves an existing key unless explicitly forced. The example sets `APP_URL` to `http://127.0.0.1:8000`, matching the development server. Adjust it to the application's base URL and review the selected services in `config/`. `.env.reference` documents additional configuration variables.
+Orionis initializes a missing `APP_KEY` at startup. If `key:generate` reports that the key is already set, keep it. The example sets `APP_URL` to `http://127.0.0.1:8000`, matching the development server. Adjust it to the application's base URL and review the selected services in `config/`. `.env.reference` documents additional configuration variables.
 
 ## Run and test
 
@@ -59,9 +59,9 @@ The tracked `database/` directory is ready for the default SQLite connection. SQ
 
 ## Runtime compatibility
 
-This template targets Orionis 1.6.0. `app/exceptions/handler.py` uses `handleFailure(exception, context)` and `handleResult(value, context)`, returning the inherited deferred handling plan so the runtime can log and present failures once. Customize these hooks for application policy.
+`app/exceptions/handler.py` uses `handleFailure(exception, context)` and `handleResult(value, context)`, returning the inherited deferred handling plan so the runtime can log and present failures once. Customize these hooks for application policy.
 
-`config/app.py` defaults to authenticated `AES-256-GCM`, matching the framework. Legacy CBC ciphers are no longer supported. Before upgrading an existing application that uses CBC, migrate its encrypted values offline using the previous compatible framework version, then switch `APP_CIPHER` to a supported GCM cipher. Preserve the existing application key; Orionis 1.6 cannot start with a CBC cipher or decrypt legacy CBC payloads.
+`config/app.py` defaults to authenticated `AES-256-GCM`, matching the framework. Legacy CBC ciphers are no longer supported. Before upgrading an existing application that uses CBC, migrate its encrypted values offline using the previous compatible framework version, then switch `APP_CIPHER` to a supported GCM cipher. Preserve the existing application key throughout the migration.
 
 ## Framework conventions
 
