@@ -16,7 +16,7 @@ This is the **blank application skeleton** from the `blank_1.x` branch. It regis
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`; that generated file is not included in this template.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.9.0 or later within 1.x**. `pyproject.toml` declares the supported framework range. The initial `uv sync` resolves dependencies and creates a local `uv.lock`.
 
 Run commands from this application's root. For a new checkout, copy `.env.example` to `.env` if `.env` does not already exist. Use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Keep an existing application's environment values and key.
 
@@ -25,7 +25,7 @@ uv sync
 uv run orionis key:generate
 ```
 
-`key:generate` stores a new `APP_KEY` in `.env` and preserves an existing key unless explicitly forced. The example sets `APP_URL` to `http://127.0.0.1:8000`, matching the development server. Adjust it to the application's base URL and review the selected services in `config/`. `.env.reference` documents additional configuration variables.
+Orionis writes a missing `APP_KEY` to `.env` during startup. If `key:generate` reports that the key is already set, keep it. The example sets `APP_URL` to `http://127.0.0.1:8000`, matching the development server. Adjust it to the application's base URL and review the selected services in `config/`. `.env.reference` documents additional configuration variables.
 
 ## Run and test
 
@@ -42,9 +42,14 @@ uv run ruff check .
 The framework provides `GET /up` for health checks, plus its built-in favicon, robots, and sitemap routes. No application routes are predefined: a request to `/` returns `404` until you add one. For example, add this to `routes/web.py`:
 
 ```python
+from orionis.http import PlainTextResponse
 from orionis.support.facades import Route
 
-Route.get("/", lambda: "Hello, Orionis")
+def welcome() -> PlainTextResponse:
+    """Greet the visitor."""
+    return PlainTextResponse("Hello, Orionis")
+
+Route.get("/", welcome)
 ```
 
 Use `app/providers/app_service_provider.py` for application bindings, `bootstrap/lifespan.py` for lifecycle callbacks, and `app/exceptions/handler.py` for exception handling. The `config/` directory exposes the framework's service configuration even when your application does not use every service.
@@ -64,7 +69,7 @@ The empty extension directories follow the framework's canonical application pat
 
 The CSS and JavaScript entry files are empty, as in the framework's application structure. No frontend build tool is required or bundled. Publish browser assets to `storage/app/public` through your chosen build process; `resources/` is not a public static mount.
 
-This template has no application models or migrations. Add business migrations when your application needs them. In Orionis 1.5, `auth:migrate` owns roles, permissions, their three association tables, personal access tokens, and password-reset tokens. It does not create users or seed privileges. Use the relevant [internal storage command](https://docs.orionis-framework.com/en/database/commands#internal-storage-commands) for SQL auth, cache, queue, scheduler, or session storage, with its configured connection; do not duplicate those tables in application migrations.
+Add business models and migrations when your application needs them. `auth:migrate` creates the framework tables for roles, permissions, their three associations, personal access tokens, and password-reset tokens. The application owns its user table and privilege seeds. Each SQL-backed service has its own [internal storage command](https://docs.orionis-framework.com/en/database/commands#internal-storage-commands).
 
 The template includes the `database/` directory for the default SQLite connection and `resources/views/` for your templates. SQLite creates `database/database.sqlite` when a SQL operation opens the connection. An alternative database path needs an existing parent directory as well.
 
@@ -74,9 +79,9 @@ The minimal environment uses SQLite, file cache and sessions, synchronous queues
 
 ## Runtime compatibility
 
-This template targets Orionis 1.6.0. `app/exceptions/handler.py` uses `handleFailure(exception, context)` and `handleResult(value, context)`, returning the inherited deferred handling plan so the runtime can log and present failures once. Customize these hooks for application policy.
+`app/exceptions/handler.py` uses `handleFailure(exception, context)` and `handleResult(value, context)`, returning the inherited deferred handling plan so the runtime can log and present failures once. Customize these hooks for application policy.
 
-`config/app.py` defaults to authenticated `AES-256-GCM`, matching the framework. Legacy CBC ciphers are no longer supported. Before upgrading an existing application that uses CBC, migrate its encrypted values offline using the previous compatible framework version, then switch `APP_CIPHER` to a supported GCM cipher. Preserve the existing application key; Orionis 1.6 cannot start with a CBC cipher or decrypt legacy CBC payloads.
+`config/app.py` defaults to authenticated `AES-256-GCM`, matching the framework. Before upgrading an existing application that uses CBC, migrate its encrypted values offline using the previous compatible framework version, then switch `APP_CIPHER` to a supported GCM cipher. Preserve the existing application key during the migration.
 
 ## Framework conventions
 
