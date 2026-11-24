@@ -9,7 +9,17 @@ app = Application(base_path=Path(__file__).parent.parent)
 
 app.compile(
     path="storage/framework/bootstrap",
-    invalidation_paths=["app", "bootstrap", "config", "database", "routes", ".env"],
+    invalidation_paths=[
+        "app",
+        "bootstrap",
+        "config",
+        "database/factories",
+        "database/migrations",
+        "database/schemas",
+        "database/seeders",
+        "routes",
+        ".env",
+    ],
 )
 
 register_lifespan_callbacks(app)

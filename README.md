@@ -16,7 +16,7 @@ This is the **CLI and background worker skeleton** from the `slim_worker_1.x` br
 
 ## Requirements and setup
 
-Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.6.0 or later within 1.x**. Run commands from the application's root. Copy `.env.example` to `.env` for a new checkout: use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Preserve an existing application's environment and key.
+Use **Python 3.14+**, [uv](https://docs.astral.sh/uv/), and **Orionis 1.9.0 or later within 1.x**. Run commands from the application's root. Copy `.env.example` to `.env` for a new checkout: use `cp .env.example .env` on POSIX shells or `Copy-Item .env.example .env` in PowerShell. Preserve an existing application's environment and key.
 
 ```shell
 uv sync
@@ -24,7 +24,7 @@ uv run orionis key:generate
 uv run orionis queue:migrate
 ```
 
-The initial `uv sync` creates a local `uv.lock`; that generated file is not included in the template. `key:generate` stores `APP_KEY` and preserves an existing key unless explicitly forced.
+The initial `uv sync` creates a local `uv.lock`; that generated file is not included in the template. Orionis initializes a missing `APP_KEY` at startup. If `key:generate` reports that the key is already set, keep it.
 
 The example uses SQLite at `database/database.sqlite`, file cache, and the **database queue connection**. Tracked placeholders preserve `database/factories/`, `database/migrations/`, `database/schemas/`, and `database/seeders/` in a fresh checkout. `queue:migrate` creates the framework's job and failed-job tables, preserving existing records. Configure another SQL connection before running it if needed. `.env.reference` documents optional application, database, filesystem, cache, logging, queue, scheduler, and testing settings.
 
@@ -32,9 +32,9 @@ The database folders start empty: the sample job needs only framework-owned queu
 
 ## Framework compatibility
 
-This template targets Orionis 1.6.0. `app/exceptions/handler.py` uses the current `handleFailure(exception, context)` and `handleResult(value, context)` hooks. Return the inherited handling plan to retain deferred logging and protocol-specific presentation.
+`app/exceptions/handler.py` uses the current `handleFailure(exception, context)` and `handleResult(value, context)` hooks. Return the inherited handling plan to retain deferred logging and protocol-specific presentation.
 
-New applications default to `AES-256-GCM`. Orionis 1.6.0 no longer supports CBC ciphers. Before upgrading an existing application that stores CBC-encrypted values, migrate those values offline with the previous framework version to a supported GCM cipher and preserve its `APP_KEY`. Set `APP_CIPHER` to the migrated cipher; changing the setting alone does not convert existing ciphertext.
+New applications default to `AES-256-GCM`. Before upgrading an existing application that stores CBC-encrypted values, migrate those values offline with the previous framework version to a supported GCM cipher and preserve its `APP_KEY`. Set `APP_CIPHER` to the migrated cipher; changing the setting alone does not convert existing ciphertext.
 
 ## Dispatch and consume a job
 
