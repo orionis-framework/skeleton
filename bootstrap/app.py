@@ -18,7 +18,11 @@ app.compile(
         "app",
         "bootstrap",
         "config",
-        "database",
+        # Watch the database source directories so SQLite writes do not reload workers.
+        "database/factories",
+        "database/migrations",
+        "database/schemas",
+        "database/seeders",
         "resources",
         "routes",
         ".env",
